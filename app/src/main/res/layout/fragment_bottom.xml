@@ -46,10 +46,10 @@
         android:layout_height="56dp"
         android:backgroundTint="@color/rippleColor"
         android:src="@drawable/camera"
-        android:tint="@android:color/transparent"
+        android:tint="@android:color/white"
         app:backgroundTint="@color/white"
         app:layout_anchor="@+id/bottomAppBar"
         app:layout_anchorGravity="top|center"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.AppCompat.Circle"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.AppCompat.Circle" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

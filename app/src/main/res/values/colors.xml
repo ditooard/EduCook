@@ -5,6 +5,7 @@
     <color name="red">#C83F41</color>
     <color name="light_gray">#ECECEC</color>
     <color name="gray">#A9A9A9</color>
+    <color name="mediumgray">#2F2F2F</color>
 
     <color name="backgroundColor">#FF5722</color>
     <color name="rippleColor">#D5787A</color>

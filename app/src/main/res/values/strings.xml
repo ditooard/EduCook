@@ -26,4 +26,13 @@
     <string name="ingredients">Ingredients</string>
     <string name="directions">Directions</string>
     <string name="upload">Upload</string>
+    <string name="tittleCard">Cumi Balado</string>
+    <string name="uploudBy">by Team Capstone,</string>
+    <string name="homeText">Hello, Capstone!</string>
+    <string name="homeText2">Lets make your own food !</string>
+    <string name="bottomAdd">Share Recipe</string>
+    <string name="homeRecipe">Today Recipe</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="search">Search</string>
+
 </resources>
