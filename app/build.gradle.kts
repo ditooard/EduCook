@@ -35,7 +35,6 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        dataBinding = true
     }
 }
 
@@ -52,4 +51,5 @@ dependencies {
     implementation ("com.google.android.material:material:1.3.0-alpha03")
     implementation("com.github.bumptech.glide:glide:4.15.0")
 
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 }
