@@ -9,4 +9,6 @@
     <color name="backgroundColor">#FF5722</color>
     <color name="rippleColor">#03FF72</color>
 
+    <color name="mainColor">#FF5722</color>
+
 </resources>
