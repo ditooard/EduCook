@@ -26,4 +26,7 @@
     <string name="ingredients">Ingredients</string>
     <string name="directions">Directions</string>
     <string name="upload">Upload</string>
+    <string name="photo">Photo</string>
+    <string name="my_recipe">My Recipes</string>
+    <string name="logout">Logout</string>
 </resources>
