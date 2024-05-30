@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/bottom_home"
-        android:icon="@drawable/baseline_home_24"
+        android:icon="@drawable/home"
         android:title="Home" />
 
     <item
         android:id="@+id/bottom_search"
-        android:icon="@drawable/baseline_search_24"
+        android:icon="@drawable/search"
         android:title="Search" />
 
     <item
@@ -18,11 +18,11 @@
 
     <item
         android:id="@+id/bottom_bookmark"
-        android:icon="@drawable/baseline_bookmark_border_24"
+        android:icon="@drawable/bookmark"
         android:title="Bookmark" />
 
     <item
         android:id="@+id/bottom_profile"
-        android:icon="@drawable/ic_person_outline_24"
+        android:icon="@drawable/user"
         android:title="Profile" />
 </menu>

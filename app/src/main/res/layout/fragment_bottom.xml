@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.nav_activity.BottomFragment">
 
 
@@ -17,38 +17,39 @@
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/backgroundColor"
+        android:backgroundTint="@color/white"
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
-        app:fabCradleMargin="10dp"
-        app:fabCradleRoundedCornerRadius="10dp"
         app:fabAlignmentMode="center"
-        app:fabAnchorMode="cradle">
+        app:fabAnchorMode="cradle"
+        app:fabCradleMargin="10dp"
+        app:fabCradleRoundedCornerRadius="10dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
             app:itemIconTint="@color/icon_text_color_state"
             app:itemRippleColor="@color/rippleColor"
             app:itemTextColor="@color/icon_text_color_state"
             app:labelVisibilityMode="labeled"
-            app:menu="@menu/fab_bottom_menu"/>
+            app:menu="@menu/fab_bottom_menu" />
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addFabBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:backgroundTint="@color/rippleColor"
-        android:src="@drawable/ic_add_24"
-        android:tint="@color/white"
+        android:src="@drawable/camera"
+        android:tint="@android:color/transparent"
+        app:backgroundTint="@color/white"
         app:layout_anchor="@+id/bottomAppBar"
-        app:layout_anchorGravity="top|center" />
+        app:layout_anchorGravity="top|center"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.AppCompat.Circle"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

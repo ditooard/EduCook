@@ -9,6 +9,16 @@
         <item name="hintTextColor">@color/gray</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.AppCompat.Circle</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.AppCompat.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 
 
     <style name="Theme.EduCook" parent="Base.Theme.EduCook" />
