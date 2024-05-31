@@ -1,12 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CameraActivity">
+    tools:context="ui.CameraActivity"
+    android:background="@drawable/background">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30dp">
 
+        <ImageView
+            android:id="@+id/imageStoryUpload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="16dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/img" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/cameraButton"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="56dp"
+            android:text="@string/gallery"
+            app:layout_constraintEnd_toStartOf="@+id/galleryButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/imageStoryUpload"
+            app:layout_constraintTop_toBottomOf="@+id/imageStoryUpload" />
+
+        <Button
+            android:id="@+id/galleryButton"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="56dp"
+            android:text="@string/camera"
+            app:layout_constraintEnd_toEndOf="@+id/imageStoryUpload"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cameraButton"
+            app:layout_constraintTop_toBottomOf="@+id/imageStoryUpload" />
+
+        <Button
+            android:id="@+id/btnAnalyze"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="560dp"
+            android:text="@string/analyze"
+            app:layout_constraintEnd_toEndOf="@+id/galleryButton"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/cameraButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -3,8 +3,8 @@
     <string name="signup">Sign Up</string>
     <string name="sign_in">Sign In</string>
     <string name="desc_signup_page">Create your account</string>
-    <string name="username">Username</string>
-    <string name="email">Email</string>
+    <string name="username">Tim Capstone</string>
+    <string name="email">capstone@gmail.com</string>
     <string name="password">Password</string>
     <string name="logo">Logo</string>
     <string name="have_account">Have an account?</string>
@@ -30,6 +30,7 @@
     <string name="my_recipe">My Recipes</string>
     <string name="logout">Logout</string>
     <string name="tittleCard">Cumi Balado</string>
+    <string name="recomen">Recomendation</string>
     <string name="uploudBy">by Team Capstone,</string>
     <string name="homeText">Hello, Capstone!</string>
     <string name="homeText2">Lets make your own food !</string>
@@ -37,4 +38,31 @@
     <string name="homeRecipe">Today Recipe</string>
     <string name="bookmark">Bookmark</string>
     <string name="search">Search</string>
+
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="analyze">Analyze</string>
+
+
+    <string name="recipe_ingredients">
+    200 gr cumi basah\n
+    1 jeruk nipis\n
+    1/4 buah bawang bombay\n
+    8 siung bawang merah\n
+    6 buah cabe merah keriting\n
+    6 buah cabe rawit merah\n
+    1 buah tomat merah ukuran kecil
+    </string>
+
+    <string name="recipe_instructions">
+    Cuci bersih cumi. Buang tinta hitam, baluri dengan air jeruk nipis. Diamkan 10 menit, bilas, tiriskan.\n
+    \n
+    Iris bawang bombay sesuai selera. Blender bumbu halus.\n
+    \n
+    Panaskan minyak goreng, tumis bawang bombay sampai layu ditandai dengan warna bawang bombay yang transparan. Setelah itu masukkan bumbu halus, tumis bumbu sampai tanak dan matang agar tidak langu.\n
+    \n
+    Setelah bumbu tanak, tambahkan bumbu tabur. Aduk, besarkan api kompor, masukkan cumi basah. Aduk-aduk, masak sekitar 3-5 menit saja agar cumi tidak alot. Cicipi dulu ya sebelum diangkat. Siap saji.
+    </string>
+
+
 </resources>
