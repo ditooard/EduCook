@@ -13,4 +13,8 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10dp</item>
     </style>
+
+    <style name="NoBackgroundBottomNavigationTheme">
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
 </resources>

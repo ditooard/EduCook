@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@drawable/background"
+    android:background="?attr/colorSecondary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.AddRecipeActivity">
@@ -12,28 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/arrow_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/ib_arrow_back"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="42dp"
+            android:background="@drawable/input_background"
             android:contentDescription="@string/arrow_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_back"/>
+            app:srcCompat="@drawable/ic_arrow_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/add_recipe"
+            android:textColor="?attr/colorOnSecondary"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSecondary"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
         
         <ImageView
             android:id="@+id/iv_insert_photo"
@@ -46,7 +48,7 @@
             app:srcCompat="@drawable/ic_insert_photo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/arrow_back"
+            app:layout_constraintTop_toBottomOf="@id/ib_arrow_back"
             android:contentDescription="@string/insert_photo" />
 
         <EditText
@@ -59,6 +61,7 @@
             android:padding="15dp"
             android:background="@drawable/input_background"
             android:hint="@string/title"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/black"
             android:textColorHint="?attr/hintTextColor"
             android:inputType="text"
@@ -78,6 +81,7 @@
             android:gravity="top"
             android:background="@drawable/input_background"
             android:hint="@string/ingredients"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/black"
             android:textColorHint="?attr/hintTextColor"
             android:inputType="textMultiLine"
@@ -97,6 +101,7 @@
             android:gravity="top"
             android:background="@drawable/input_background"
             android:hint="@string/directions"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/black"
             android:textColorHint="?attr/hintTextColor"
             android:inputType="textMultiLine"
@@ -115,13 +120,12 @@
             android:layout_marginBottom="32dp"
             android:background="@drawable/button_background"
             android:text="@string/upload"
+            android:fontFamily="@font/roboto_bold"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_directions" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>

@@ -5,31 +5,33 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.nav_activity.SearchActivity"
+    tools:context=".RecommendationActivity"
     android:background="?attr/colorSecondary">
 
-    <com.google.android.material.search.SearchBar
-        android:id="@+id/searchBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:hint="@string/search"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ImageButton
+        android:id="@+id/ib_arrow_back"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/input_background"
+        android:contentDescription="@string/arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck">
-    </com.google.android.material.search.SearchBar>
+        app:srcCompat="@drawable/ic_arrow_back" />
 
-    <com.google.android.material.search.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/tv_recommendation"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="54dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/recommendation"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:iconifiedByDefault="false">
-    </com.google.android.material.search.SearchView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_users"
@@ -42,6 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        app:layout_constraintTop_toBottomOf="@id/ib_arrow_back"
         tools:listitem="@layout/item_row_recipe" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

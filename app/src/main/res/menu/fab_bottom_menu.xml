@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/bottom_home"
-        android:icon="@drawable/home"
-        android:title="Home" />
+        android:icon="@drawable/ic_home"
+        android:title="@string/home" />
 
     <item
         android:id="@+id/bottom_search"
-        android:icon="@drawable/search"
-        android:title="Search" />
+        android:icon="@drawable/ic_search"
+        android:title="@string/search" />
 
     <item
         android:id="@+id/fab"
@@ -18,11 +18,11 @@
 
     <item
         android:id="@+id/bottom_bookmark"
-        android:icon="@drawable/bookmark"
-        android:title="Bookmark" />
+        android:icon="@drawable/ic_outline_bookmark"
+        android:title="@string/bookmark" />
 
     <item
         android:id="@+id/bottom_profile"
-        android:icon="@drawable/user"
-        android:title="Profile" />
+        android:icon="@drawable/ic_profile"
+        android:title="@string/profile" />
 </menu>
