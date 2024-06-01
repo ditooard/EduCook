@@ -25,8 +25,21 @@
         <item name="cornerSizeBottomLeft">10dp</item>
     </style>
 
-    <style name="NoBackgroundBottomNavigationTheme">
-        <item name="colorPrimary">@android:color/transparent</item>
+    <style name="CustomBottomAppBarStyle" parent="Widget.MaterialComponents.BottomAppBar">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="shapeAppearance">@style/BottomAppBarShapeAppearance</item>
+    </style>
+
+    <style name="BottomAppBarShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+        <item name="strokeColor">@color/gray</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+
+    <style name="SearchBarShape" parent="Widget.Material3.SearchBar">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
     </style>
 
     <style name="Theme.EduCook" parent="Base.Theme.EduCook" />

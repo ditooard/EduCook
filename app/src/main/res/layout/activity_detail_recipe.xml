@@ -69,10 +69,10 @@
             android:layout_marginTop="25dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/title"
             android:textColor="?attr/colorOnSecondary"
-            android:textSize="20sp"
+            android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_photo" />
 
@@ -96,7 +96,7 @@
             android:fontFamily="@font/roboto_medium"
             android:text="@string/ingredients"
             android:textColor="?attr/colorOnSecondary"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_detail_avatar" />
 
@@ -109,7 +109,7 @@
             android:fontFamily="@font/roboto"
             android:text="@string/username"
             android:textColor="@color/gray"
-            android:textSize="11sp"
+            android:textSize="13sp"
             android:textStyle="normal"
             app:layout_constraintStart_toEndOf="@id/iv_detail_avatar"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
@@ -123,7 +123,7 @@
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/roboto"
             android:autofillHints="Ingredients"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:text="@string/recipe_ingredients"
             android:textColor="?attr/colorOnSecondary"
             android:lineSpacingExtra="8dp"
@@ -141,7 +141,7 @@
             android:fontFamily="@font/roboto_medium"
             android:text="@string/directions"
             android:textColor="?attr/colorOnSecondary"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_ingredient" />
 
@@ -158,7 +158,7 @@
             android:text="@string/recipe_instructions"
             android:textColor="?attr/colorOnSecondary"
             android:fontFamily="@font/roboto"
-            android:textSize="12sp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
