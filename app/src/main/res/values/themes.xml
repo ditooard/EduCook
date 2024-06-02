@@ -37,9 +37,8 @@
         <item name="strokeWidth">2dp</item>
     </style>
 
-    <style name="SearchBarShape" parent="Widget.Material3.SearchBar">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">10dp</item>
+    <style name="AppCustomIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
     </style>
 
     <style name="Theme.EduCook" parent="Base.Theme.EduCook" />

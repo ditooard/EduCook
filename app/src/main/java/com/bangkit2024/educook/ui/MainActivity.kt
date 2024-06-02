@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bangkit2024.educook.R
+import com.bangkit2024.educook.databinding.ActivityMainBinding
 import com.bangkit2024.educook.ui.nav_activity.BottomFragment
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -28,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         drawerLayout = findViewById(R.id.drawerLayout)

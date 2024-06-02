@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/bottom_bookmark"
-        android:icon="@drawable/ic_outline_bookmark"
+        android:icon="@drawable/ic_bookmark_nav"
         android:title="@string/bookmark" />
 
     <item

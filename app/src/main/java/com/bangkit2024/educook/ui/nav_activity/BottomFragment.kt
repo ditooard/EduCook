@@ -1,12 +1,10 @@
 package com.bangkit2024.educook.ui.nav_activity
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.ui.CameraActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,7 +32,7 @@ class BottomFragment : Fragment() {
                 }
                 R.id.bottom_bookmark -> {
                     replaceFragment(BookmarkActivity())
-                    activity?.title = "Boomark"
+                    activity?.title = "Bookmark"
                 }
                 R.id.bottom_profile -> {
                     replaceFragment(ProfileActivity())
@@ -61,5 +59,4 @@ class BottomFragment : Fragment() {
             .replace(R.id.bottomFragment,fragment)
             .commit()
     }
-
 }

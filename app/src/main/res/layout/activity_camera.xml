@@ -23,27 +23,40 @@
 
     <Button
         android:id="@+id/cameraButton"
-        android:layout_width="170dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="50dp"
-        android:background="@drawable/button_background"
-        android:text="@string/gallery"
-        android:textColor="@color/white"
-        android:fontFamily="@font/roboto"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_insert_photo" />
-
-    <Button
-        android:id="@+id/galleryButton"
-        android:layout_width="170dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/button_background"
         android:text="@string/camera"
         android:textColor="@color/white"
         android:fontFamily="@font/roboto"
+        app:layout_constraintEnd_toStartOf="@id/verticalGuideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_insert_photo" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/galleryButton"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/button_background"
+        android:text="@string/gallery"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_insert_photo" />
 
