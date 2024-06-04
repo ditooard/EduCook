@@ -9,7 +9,6 @@
     <string name="logo">Logo</string>
     <string name="have_account">Have an account?</string>
     <string name="or">Or</string>
-    <string name="signup_google">Sign Up with Google</string>
     <string name="signin_google">Sign In with Google</string>
     <string name="title_signin">Welcome Back</string>
     <string name="desc_signin_page">Sign in to your account</string>
@@ -65,6 +64,6 @@
     <string name="see_all">See all</string>
     <string name="home">Home</string>
     <string name="camera_navigation">Camera Navigation</string>
-
-
+    <string name="register_success">Sign Up Success</string>
+    <string name="login_success">Sign In Success</string>
 </resources>

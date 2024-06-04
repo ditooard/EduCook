@@ -8,12 +8,13 @@
     android:background="?attr/colorSecondary"
     tools:context=".ui.nav_activity.ProfileActivity">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/iv_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/input_background"
         android:contentDescription="@string/logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

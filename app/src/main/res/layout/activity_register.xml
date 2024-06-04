@@ -9,23 +9,24 @@
     tools:context=".ui.RegisterActivity">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/logo"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal"
+        android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="24dp"
         android:text="@string/signup"
         android:textColor="?attr/colorOnSecondary"
@@ -33,7 +34,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
+        app:layout_constraintTop_toBottomOf="@id/iv_logo" />
 
     <TextView
         android:id="@+id/descTextView"
@@ -169,7 +170,7 @@
     <TextView
         android:id="@+id/tv_sign_in"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
@@ -181,57 +182,16 @@
         app:layout_constraintStart_toEndOf="@id/tv_have_acc"
         app:layout_constraintTop_toBottomOf="@id/signupButton" />
 
-    <TextView
-        android:id="@+id/tv_or"
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:drawablePadding="5dp"
-        android:text="@string/or"
-        android:textColor="?attr/colorOnSecondary"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:drawableEndCompat="@drawable/ic_line"
-        app:drawableStartCompat="@drawable/ic_line"
+        android:visibility="gone"
+        android:indeterminateTint="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_have_acc" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/googleButton"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/outline_background"
-        android:drawableStart="@drawable/ic_google"
-        android:drawablePadding="10dp"
-        android:paddingStart="95dp"
-        android:paddingEnd="95dp"
-        android:text="@string/signup_google"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textColor="?attr/colorOnSecondary"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_or"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.21"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.07" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
