@@ -1,4 +1,4 @@
-package com.bangkit2024.educook.data.remote.response
+package com.bangkit2024.educook.data.response
 
 import com.google.gson.annotations.SerializedName
 

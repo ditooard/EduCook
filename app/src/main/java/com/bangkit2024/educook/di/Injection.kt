@@ -4,7 +4,7 @@ import android.content.Context
 import com.bangkit2024.educook.data.UserRepository
 import com.bangkit2024.educook.data.local.UserPreference
 import com.bangkit2024.educook.data.local.dataStore
-import com.bangkit2024.educook.data.remote.retrofit.ApiConfig
+import com.bangkit2024.educook.api.ApiConfig
 
 object Injection {
     fun provideRepository(context: Context): UserRepository {

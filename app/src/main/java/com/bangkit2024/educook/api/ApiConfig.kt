@@ -1,4 +1,4 @@
-package com.bangkit2024.educook.data.remote.retrofit
+package com.bangkit2024.educook.api
 
 import com.bangkit2024.educook.BuildConfig
 import okhttp3.Interceptor

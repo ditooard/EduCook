@@ -13,4 +13,7 @@
 
     <color name="mainColor">#FF5722</color>
 
+    <color name="progress_color">#FF0000</color> <!-- Red color for example -->
+
+
 </resources>

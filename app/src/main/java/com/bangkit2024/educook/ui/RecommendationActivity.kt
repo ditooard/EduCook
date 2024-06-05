@@ -1,10 +1,11 @@
-package com.bangkit2024.educook
+package com.bangkit2024.educook.ui
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bangkit2024.educook.R
 
 class RecommendationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

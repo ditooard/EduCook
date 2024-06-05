@@ -1,5 +1,6 @@
 package com.bangkit2024.educook.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +9,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.databinding.ActivityLoginBinding
@@ -18,6 +22,9 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
+
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
     private lateinit var binding: ActivityLoginBinding
     private val viewModel by viewModels<LoginViewModel> {
         ViewModelFactory.getInstance(this)

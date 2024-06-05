@@ -1,21 +1,45 @@
 package com.bangkit2024.educook.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.bangkit2024.educook.R
+import com.bangkit2024.educook.adapter.MenuListAdapter
+import com.bangkit2024.educook.data.response.DetailMenu
+import com.bangkit2024.educook.databinding.ActivityDetailRecipeBinding
+import com.bumptech.glide.Glide
 
 class DetailRecipeActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityDetailRecipeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_detail_recipe)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityDetailRecipeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val storyDetails = intent.getParcelableExtra<DetailMenu>(STORY) as DetailMenu
+        displayStoryDetails(storyDetails)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
+    }
+
+    private fun displayStoryDetails(storyDetails: DetailMenu) {
+        binding.apply {
+            tvUsername.text = storyDetails.name
+            tvIngredient.text = storyDetails.description
+            tvDirections.text = MenuListAdapter.convertDateToFormattedString(storyDetails.createdAt)
         }
+        Glide.with(this)
+            .load(storyDetails.photoUrl)
+            .placeholder(R.drawable.ic_launcher_foreground)
+            .into(binding.ivPhoto)
+    }
+
+    companion object {
+        const val STORY = "story_extra"
     }
 }

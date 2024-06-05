@@ -22,6 +22,7 @@ class ViewModelFactory private constructor(
             return ProfileViewModel(userRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
+
     }
 
     companion object {
@@ -32,4 +33,6 @@ class ViewModelFactory private constructor(
                 instance ?: ViewModelFactory(Injection.provideRepository(context))
             }.also { instance = it }
     }
+
+
 }
