@@ -19,12 +19,6 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="RoundedCorners">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeBottomRight">10dp</item>
-        <item name="cornerSizeBottomLeft">10dp</item>
-    </style>
-
     <style name="CustomBottomAppBarStyle" parent="Widget.MaterialComponents.BottomAppBar">
         <item name="backgroundTint">?attr/colorSecondary</item>
         <item name="shapeAppearance">@style/BottomAppBarShapeAppearance</item>

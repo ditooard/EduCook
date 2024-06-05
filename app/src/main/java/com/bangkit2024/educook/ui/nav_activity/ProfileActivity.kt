@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,7 +17,10 @@ import com.bangkit2024.educook.data.local.dataStore
 import com.bangkit2024.educook.data.response.DetailMenu
 import com.bangkit2024.educook.databinding.ActivityProfileBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
+import com.bangkit2024.educook.ui.LoginActivity
 import com.bangkit2024.educook.viewmodel.HomeViewModel
+import com.bangkit2024.educook.viewmodel.ProfileViewModel
+import com.bangkit2024.educook.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 
 class ProfileActivity : Fragment() {
@@ -28,15 +32,33 @@ class ProfileActivity : Fragment() {
         ViewModelProvider(this)[HomeViewModel::class.java]
     }
 
+    private val profileViewModel by viewModels<ProfileViewModel>{
+        ViewModelFactory.getInstance(requireContext())
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = ActivityProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         setupRecyclerView()
         initializeUserPreferences()
         setupObservers()
-        return binding.root
+
+        binding.ivLogout.setOnClickListener {
+            profileViewModel.logout()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra(LoginActivity.EXTRA_LOGOUT_FLAG, true)
+            startActivity(intent)
+            requireActivity().finish()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -55,6 +77,7 @@ class ProfileActivity : Fragment() {
                 userToken = token
                 homeViewModel.fetchStories(userToken)
             }
+
         }
     }
 
