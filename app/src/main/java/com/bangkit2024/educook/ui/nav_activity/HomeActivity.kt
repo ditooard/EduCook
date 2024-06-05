@@ -81,7 +81,8 @@ class HomeActivity : Fragment() {
     private fun displayStories(stories: List<DetailMenu>) {
         toggleNoDataMessage(stories.isEmpty())
 
-        val adapter = MenuListAdapter(stories)
+        val limitedStories = stories.take(5)
+        val adapter = MenuListAdapter(limitedStories)
         binding.rvUsers.adapter = adapter
 
         adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
@@ -105,6 +106,4 @@ class HomeActivity : Fragment() {
     private fun toggleLoadingIndicator(isVisible: Boolean) {
         binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
-
-    companion object
 }

@@ -1,5 +1,6 @@
 package com.bangkit2024.educook.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bangkit2024.educook.R
@@ -20,6 +21,9 @@ class DetailRecipeActivity : AppCompatActivity() {
         displayStoryDetails(storyDetails)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.apply {
+            ibArrowBack.setOnClickListener { finish() }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
