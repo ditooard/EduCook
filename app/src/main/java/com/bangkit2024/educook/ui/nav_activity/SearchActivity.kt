@@ -24,6 +24,7 @@ class SearchActivity : Fragment() {
     private lateinit var binding: ActivitySearchBinding
     private lateinit var userToken: String
     private lateinit var adapter: MenuListAdapter
+    private var allStories: List<DetailMenu> = emptyList()
 
     private val homeViewModel: HomeViewModel by lazy {
         ViewModelProvider(this)[HomeViewModel::class.java]
@@ -47,6 +48,8 @@ class SearchActivity : Fragment() {
         binding.rvUsers.addItemDecoration(
             DividerItemDecoration(requireContext(), layoutManager.orientation)
         )
+        adapter = MenuListAdapter(emptyList())
+        binding.rvUsers.adapter = adapter
     }
 
     private fun initializeUserPreferences() {
@@ -61,8 +64,9 @@ class SearchActivity : Fragment() {
     }
 
     private fun setupObservers() {
-        homeViewModel.message.observe(viewLifecycleOwner) { message ->
-            displayStories(homeViewModel.stories.value ?: emptyList())
+        homeViewModel.stories.observe(viewLifecycleOwner) { stories ->
+            allStories = stories
+            displayStories(stories)
         }
 
         homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
@@ -77,7 +81,7 @@ class SearchActivity : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText.orEmpty())
+                filterStories(newText.orEmpty())
                 return true
             }
         })
@@ -86,14 +90,22 @@ class SearchActivity : Fragment() {
     private fun displayStories(stories: List<DetailMenu>) {
         toggleNoDataMessage(stories.isEmpty())
 
-        adapter = MenuListAdapter(stories)
-        binding.rvUsers.adapter = adapter
+        // Menggunakan metode updateData pada adapter
+        adapter.updateData(stories)
 
+        // Mengatur callback click pada adapter
         adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
             override fun onStoryClicked(story: DetailMenu) {
                 navigateToDetailRecipeActivity(story)
             }
         })
+    }
+
+    private fun filterStories(query: String) {
+        val filteredStories = allStories.filter { story ->
+            story.name.contains(query, ignoreCase = true) || story.description.contains(query, ignoreCase = true)
+        }
+        displayStories(filteredStories)
     }
 
     private fun navigateToDetailRecipeActivity(story: DetailMenu) {
@@ -110,6 +122,4 @@ class SearchActivity : Fragment() {
     private fun toggleLoadingIndicator(isVisible: Boolean) {
         binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
-
-    companion object
 }

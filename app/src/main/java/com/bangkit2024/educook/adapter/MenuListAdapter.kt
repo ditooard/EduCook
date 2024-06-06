@@ -17,28 +17,21 @@ import java.util.Locale
 class MenuListAdapter(private var stories: List<DetailMenu>) :
     RecyclerView.Adapter<MenuListAdapter.StoryViewHolder>() {
 
-    private var filteredStories: List<DetailMenu> = stories.toList()
     private var clickCallback: OnStoryClickCallback? = null
+
+    fun updateData(newStories: List<DetailMenu>) {
+        stories = newStories
+        notifyDataSetChanged()
+    }
 
     fun setOnStoryClickCallback(callback: OnStoryClickCallback) {
         this.clickCallback = callback
     }
 
-    fun filter(query: String) {
-        filteredStories = if (query.isEmpty()) {
-            stories
-        } else {
-            stories.filter {
-                it.name.contains(query, ignoreCase = true) ||
-                        it.description.contains(query, ignoreCase = true)
-            }
-        }
-        notifyDataSetChanged()
-    }
-
     interface OnStoryClickCallback {
         fun onStoryClicked(story: DetailMenu)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -47,9 +40,9 @@ class MenuListAdapter(private var stories: List<DetailMenu>) :
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        holder.bind(filteredStories[position])
+        holder.bind(stories[position])
         holder.itemView.setOnClickListener {
-            clickCallback?.onStoryClicked(filteredStories[holder.adapterPosition])
+            clickCallback?.onStoryClicked(stories[holder.adapterPosition])
         }
     }
 
@@ -61,7 +54,7 @@ class MenuListAdapter(private var stories: List<DetailMenu>) :
         }
     }
 
-    override fun getItemCount(): Int = filteredStories.size
+    override fun getItemCount(): Int = stories.size
 
     companion object {
 
@@ -90,3 +83,4 @@ class MenuListAdapter(private var stories: List<DetailMenu>) :
         }
     }
 }
+

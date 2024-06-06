@@ -81,6 +81,7 @@ class HomeActivity : Fragment() {
     private fun displayStories(stories: List<DetailMenu>) {
         toggleNoDataMessage(stories.isEmpty())
 
+        // Mengambil hanya 5 cerita terbaru
         val limitedStories = stories.take(5)
         val adapter = MenuListAdapter(limitedStories)
         binding.rvUsers.adapter = adapter
