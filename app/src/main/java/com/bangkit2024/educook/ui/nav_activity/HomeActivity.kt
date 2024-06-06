@@ -106,4 +106,11 @@ class HomeActivity : Fragment() {
     private fun toggleLoadingIndicator(isVisible: Boolean) {
         binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
+
+    companion object {
+        fun newInstance(): HomeActivity {
+            return HomeActivity()
+        }
+    }
+
 }
