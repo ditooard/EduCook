@@ -95,7 +95,7 @@ class HomeActivity : Fragment() {
 
     private fun navigateToDetailRecipeActivity(story: DetailMenu) {
         val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-            putExtra(DetailRecipeActivity.STORY, story)
+            putExtra(DetailRecipeActivity.MENU, story)
         }
         startActivity(intent)
     }

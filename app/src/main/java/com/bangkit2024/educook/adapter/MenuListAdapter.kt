@@ -14,15 +14,25 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class MenuListAdapter(private var stories: List<DetailMenu>) :
+class MenuListAdapter(private var menu: List<DetailMenu>) :
     RecyclerView.Adapter<MenuListAdapter.StoryViewHolder>() {
 
     private var clickCallback: OnStoryClickCallback? = null
 
-    fun updateData(newStories: List<DetailMenu>) {
-        stories = newStories
+    private val listBookmarks = ArrayList<DetailMenu>()
+
+    fun updateData(newMenu: List<DetailMenu>) {
+        menu = newMenu
         notifyDataSetChanged()
     }
+
+    fun setList(menus: ArrayList<DetailMenu>) {
+        listBookmarks.clear()
+        listBookmarks.addAll(menus)
+        notifyDataSetChanged()
+    }
+
+
 
     fun setOnStoryClickCallback(callback: OnStoryClickCallback) {
         this.clickCallback = callback
@@ -40,9 +50,9 @@ class MenuListAdapter(private var stories: List<DetailMenu>) :
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        holder.bind(stories[position])
+        holder.bind(menu[position])
         holder.itemView.setOnClickListener {
-            clickCallback?.onStoryClicked(stories[holder.adapterPosition])
+            clickCallback?.onStoryClicked(menu[holder.adapterPosition])
         }
     }
 
@@ -54,7 +64,7 @@ class MenuListAdapter(private var stories: List<DetailMenu>) :
         }
     }
 
-    override fun getItemCount(): Int = stories.size
+    override fun getItemCount(): Int = menu.size
 
     companion object {
 

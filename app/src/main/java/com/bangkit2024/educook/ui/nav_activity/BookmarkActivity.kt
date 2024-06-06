@@ -7,22 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bangkit2024.educook.adapter.MenuListAdapter
-import com.bangkit2024.educook.data.local.UserPreference
-import com.bangkit2024.educook.data.local.dataStore
+import com.bangkit2024.educook.data.local.BookmarkMenu
 import com.bangkit2024.educook.data.response.DetailMenu
 import com.bangkit2024.educook.databinding.ActivityBookmarkBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
+import com.bangkit2024.educook.viewmodel.BookmarkViewModel
 import com.bangkit2024.educook.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
 
 class BookmarkActivity : Fragment() {
 
     private lateinit var binding: ActivityBookmarkBinding
-    private lateinit var userToken: String
+    private lateinit var adapter: MenuListAdapter
+    private lateinit var viewModel: BookmarkViewModel
 
     private val homeViewModel: HomeViewModel by lazy {
         ViewModelProvider(this)[HomeViewModel::class.java]
@@ -33,71 +31,62 @@ class BookmarkActivity : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = ActivityBookmarkBinding.inflate(inflater, container, false)
-        setupRecyclerView()
-        initializeUserPreferences()
-        setupObservers()
+
+        adapter = MenuListAdapter(ArrayList())
+
+        val onStoryClickCallback = object : MenuListAdapter.OnStoryClickCallback {
+            override fun onStoryClicked(story: DetailMenu) {
+                navigateToDetailRecipeActivity(story)
+            }
+        }
+        adapter.setOnStoryClickCallback(onStoryClickCallback)
+
+        // Tambahkan LinearLayoutManager
+        binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.rvUsers.adapter = adapter
+
+        viewModel = ViewModelProvider(this).get(BookmarkViewModel::class.java)
+
+        viewModel.getBookmarkList()?.observe(viewLifecycleOwner, { favoriteUsers ->
+            if (favoriteUsers.isNullOrEmpty()) {
+                // Menampilkan layout kosong jika daftar favorit kosong
+                binding.rvUsers.visibility = View.GONE
+            } else {
+                // Menampilkan daftar favorit jika ada data
+                val bookmarkList = mapList(favoriteUsers)
+                adapter.setList(bookmarkList)
+
+                binding.rvUsers.visibility = View.VISIBLE
+            }
+        })
+
         return binding.root
     }
 
-    private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.rvUsers.layoutManager = layoutManager
-        binding.rvUsers.addItemDecoration(
-            DividerItemDecoration(requireContext(), layoutManager.orientation)
-        )
-    }
 
-    private fun initializeUserPreferences() {
-        val preferences = UserPreference.getInstance(requireContext().dataStore)
-
-        lifecycleScope.launch {
-            preferences.getToken().collect { token ->
-                userToken = token
-                homeViewModel.fetchStories(userToken)
-            }
+    private fun mapList(menus: List<BookmarkMenu>): ArrayList<DetailMenu> {
+        val listUsers = ArrayList<DetailMenu>()
+        for (menu in menus) {
+            val userMapped = DetailMenu(
+                menu.id,
+                menu.name,
+                menu.description,
+                menu.createdAt,
+                menu.photoUrl,
+                menu.lat,
+                menu.lon
+            )
+            listUsers.add(userMapped)
         }
+        return listUsers
     }
 
-    private fun setupObservers() {
-        homeViewModel.message.observe(viewLifecycleOwner) { message ->
-            displayStories(homeViewModel.stories.value ?: emptyList())
-        }
-
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            toggleLoadingIndicator(isLoading)
-        }
-    }
-
-    private fun displayStories(stories: List<DetailMenu>) {
-        toggleNoDataMessage(stories.isEmpty())
-
-        val adapter = MenuListAdapter(stories)
-        binding.rvUsers.adapter = adapter
-
-        adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
-            override fun onStoryClicked(story: DetailMenu) {
-                adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
-                    override fun onStoryClicked(story: DetailMenu) {
-                        navigateToDetailRecipeActivity(story)
-                    }
-                })
-            }
-        })
-    }
-
-    private fun navigateToDetailRecipeActivity(story: DetailMenu) {
+    private fun navigateToDetailRecipeActivity(menu: DetailMenu) {
         val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-            putExtra(DetailRecipeActivity.STORY, story)
+            putExtra(DetailRecipeActivity.MENU, menu)
         }
         startActivity(intent)
-    }
-
-    private fun toggleNoDataMessage(isEmpty: Boolean) {
-        binding.noDataFound.visibility = if (isEmpty) View.VISIBLE else View.GONE
-    }
-
-    private fun toggleLoadingIndicator(isVisible: Boolean) {
-        binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     companion object
