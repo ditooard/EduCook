@@ -26,51 +26,84 @@ class DetailRecipeActivity : AppCompatActivity() {
         binding = ActivityDetailRecipeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val menuDetails = intent.getParcelableExtra<DetailMenu>(MENU) as DetailMenu
+        // Mendapatkan data dari intent
+        val menuDetails = intent.getParcelableExtra<DetailMenu>(MENU)
+        if (menuDetails == null) {
+            // Menampilkan pesan kesalahan jika data tidak tersedia
+            Toast.makeText(
+                this@DetailRecipeActivity,
+                "Menu information is incomplete",
+                Toast.LENGTH_SHORT
+            ).show()
+            // Finish activity jika data tidak lengkap
+            finish()
+            return
+        }
+
         displayStoryDetails(menuDetails)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.apply {
             ibArrowBack.setOnClickListener { finish() }
 
-            val name = intent.getStringExtra(NAME)
-            val id = intent.getStringExtra(ID)
-            val photoUrl = intent.getStringExtra(PHOTO_URL)
-            val description = intent.getStringExtra(DESCRIPTION)
-            val createdAt = intent.getStringExtra(CREATED_AT)
-            val lat = intent.getDoubleExtra(LAT, 0.0)
-            val lon = intent.getDoubleExtra(LON, 0.0)
-
             viewModel = ViewModelProvider(this@DetailRecipeActivity).get(DetailRecipeViewModel::class.java)
 
             var _Checked = false
             CoroutineScope(Dispatchers.IO).launch {
-                val count = id?.let { viewModel.checkBookmark(it) }
+                val count = menuDetails.id?.let { viewModel.checkBookmark(it) }
                 withContext(Dispatchers.Main) {
                     if (count != null) {
                         _Checked = count > 0
-                        binding.ibBookmark.isChecked = _Checked
+                        ibBookmark.isChecked = _Checked
                     }
                 }
             }
 
-            binding.ibBookmark.setOnClickListener {
+            ibBookmark.setOnClickListener {
                 _Checked = !_Checked
                 if (_Checked) {
-                    if (id != null && name != null && photoUrl != null && description != null && createdAt != null) {
+                    if (menuDetails.id != null &&
+                        menuDetails.name != null &&
+                        menuDetails.photoUrl != null &&
+                        menuDetails.description != null &&
+                        menuDetails.createdAt != null
+                    ) {
                         Log.d("addToBookmark", "success")
-                        val bookmarkMenu = BookmarkMenu(id, name, description, photoUrl, createdAt, lat, lon)
+                        val bookmarkMenu = BookmarkMenu(
+                            menuDetails.id,
+                            menuDetails.name,
+                            menuDetails.description,
+                            menuDetails.photoUrl,
+                            menuDetails.createdAt,
+                            menuDetails.lat,
+                            menuDetails.lon
+                        )
                         viewModel.addBookmark(bookmarkMenu)
+                    } else {
+                        Toast.makeText(
+                            this@DetailRecipeActivity,
+                            "Menu information is incomplete",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@setOnClickListener
                     }
-                    Toast.makeText(this@DetailRecipeActivity, "Menu Added to your Bookmark", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DetailRecipeActivity,
+                        "Menu Added to your Bookmark",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     Log.d("removeFromBookmark", "success")
-                    if (id != null) {
-                        viewModel.removeBookmark(id)
+                    if (menuDetails.id != null) {
+                        viewModel.removeBookmark(menuDetails.id)
                     }
-                    Toast.makeText(this@DetailRecipeActivity, "Menu Removed from your Bookmark", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DetailRecipeActivity,
+                        "Menu Removed from your Bookmark",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                binding.ibBookmark.isChecked = _Checked
+                ibBookmark.isChecked = _Checked
             }
         }
     }

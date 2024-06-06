@@ -32,7 +32,9 @@ class BookmarkActivity : Fragment() {
     ): View {
         binding = ActivityBookmarkBinding.inflate(inflater, container, false)
 
-        adapter = MenuListAdapter(ArrayList())
+        val adapter = MenuListAdapter(arrayListOf())
+
+        binding.rvUsers.adapter = adapter
 
         val onStoryClickCallback = object : MenuListAdapter.OnStoryClickCallback {
             override fun onStoryClicked(story: DetailMenu) {
@@ -55,9 +57,10 @@ class BookmarkActivity : Fragment() {
             } else {
                 // Menampilkan daftar favorit jika ada data
                 val bookmarkList = mapList(favoriteUsers)
-                adapter.setList(bookmarkList)
+                adapter.updateData(bookmarkList)
 
                 binding.rvUsers.visibility = View.VISIBLE
+                adapter.notifyDataSetChanged() // Memperbarui recyclerview
             }
         })
 
@@ -65,22 +68,23 @@ class BookmarkActivity : Fragment() {
     }
 
 
-    private fun mapList(menus: List<BookmarkMenu>): ArrayList<DetailMenu> {
-        val listUsers = ArrayList<DetailMenu>()
-        for (menu in menus) {
-            val userMapped = DetailMenu(
-                menu.id,
-                menu.name,
-                menu.description,
-                menu.createdAt,
-                menu.photoUrl,
-                menu.lat,
-                menu.lon
+    private fun mapList(bookmarkMenus: List<BookmarkMenu>): ArrayList<DetailMenu> {
+        val detailMenus = ArrayList<DetailMenu>()
+        for (bookmarkMenu in bookmarkMenus) {
+            val detailMenu = DetailMenu(
+                bookmarkMenu.id,
+                bookmarkMenu.name,
+                bookmarkMenu.description,
+                bookmarkMenu.photoUrl,
+                bookmarkMenu.createdAt,
+                bookmarkMenu.lat,
+                bookmarkMenu.lon
             )
-            listUsers.add(userMapped)
+            detailMenus.add(detailMenu)
         }
-        return listUsers
+        return detailMenus
     }
+
 
     private fun navigateToDetailRecipeActivity(menu: DetailMenu) {
         val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
