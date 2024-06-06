@@ -36,14 +36,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_arrow_back" />
 
-        <ImageButton
+        <ToggleButton
             android:id="@+id/ib_bookmark"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/input_background"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textOff=""
+            android:textOn=""
+            android:background="@drawable/toggle_bookmark"
             android:contentDescription="@string/arrow_back"
             app:layout_constraintEnd_toStartOf="@id/ib_share"
             app:layout_constraintTop_toTopOf="parent"
