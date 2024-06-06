@@ -69,7 +69,7 @@ class HomeActivity : Fragment() {
     }
 
     private fun setupObservers() {
-        homeViewModel.message.observe(viewLifecycleOwner) { message ->
+        homeViewModel.message.observe(viewLifecycleOwner) {
             displayStories(homeViewModel.stories.value ?: emptyList())
         }
 
@@ -81,7 +81,6 @@ class HomeActivity : Fragment() {
     private fun displayStories(stories: List<DetailMenu>) {
         toggleNoDataMessage(stories.isEmpty())
 
-        // Mengambil hanya 5 cerita terbaru
         val limitedStories = stories.take(5)
         val adapter = MenuListAdapter(limitedStories)
         binding.rvUsers.adapter = adapter
@@ -106,12 +105,6 @@ class HomeActivity : Fragment() {
 
     private fun toggleLoadingIndicator(isVisible: Boolean) {
         binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    companion object {
-        fun newInstance(): HomeActivity {
-            return HomeActivity()
-        }
     }
 
 }
