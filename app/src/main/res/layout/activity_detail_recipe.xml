@@ -50,8 +50,7 @@
             android:background="@drawable/toggle_bookmark"
             android:contentDescription="@string/arrow_back"
             app:layout_constraintEnd_toStartOf="@id/ib_share"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_outline_bookmark" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/ib_share"
