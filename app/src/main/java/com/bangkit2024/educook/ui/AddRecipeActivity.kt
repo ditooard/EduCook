@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.databinding.ActivityAddRecipeBinding
-import com.bangkit2024.educook.ui.nav_activity.HomeActivity
 import com.bangkit2024.educook.util.reduceFileImage
 import com.bangkit2024.educook.util.uriToFile
 import com.bangkit2024.educook.viewmodel.AddViewModel
@@ -70,35 +69,42 @@ class AddRecipeActivity : AppCompatActivity() {
             val imageFile = uriToFile(uri, this).reduceFileImage()
             Log.d("Image File", "showImage: ${imageFile.path}")
 
-            binding.progressBar.visibility = View.VISIBLE
+            val title = binding.etTitle.text.toString().trim()
+            val ingredients = binding.etIngredient.text.toString().trim()
+            val directions = binding.etDirections.text.toString().trim()
 
-            val requestBody = binding.etIngredient.text.toString().toRequestBody("text/plain".toMediaType())
-            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
-            val multipartBody = MultipartBody.Part.createFormData(
-                "photo",
-                imageFile.name,
-                requestImageFile
-            )
+            if (title.isNotEmpty() && ingredients.isNotEmpty() && directions.isNotEmpty()) {
+                binding.progressBar.visibility = View.VISIBLE
+                val description = ingredients.toRequestBody("text/plain".toMediaType())
+                val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+                val image = MultipartBody.Part.createFormData(
+                    "photo",
+                    imageFile.name,
+                    requestImageFile
+                )
 
-            lifecycleScope.launch {
-                viewModel.getToken().collect {token ->
-                    if (token.isNotEmpty()){
-                        viewModel.addRecipe(token, multipartBody, requestBody).observe(this@AddRecipeActivity){ result ->
-                            binding.progressBar.visibility = View.GONE
-                            result.onSuccess {
-                                Toast.makeText(this@AddRecipeActivity, getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this@AddRecipeActivity, MainActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                startActivity(intent)
-                                finish()
+                lifecycleScope.launch {
+                    viewModel.getToken().collect { token ->
+                        if (token.isNotEmpty()) {
+                            viewModel.addRecipe(token, image, description).observe(this@AddRecipeActivity) { result ->
+                                binding.progressBar.visibility = View.GONE
+                                result.onSuccess {
+                                    Toast.makeText(this@AddRecipeActivity, getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this@AddRecipeActivity, MainActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                    startActivity(intent)
+                                    finish()
+                                }
+                                result.onFailure { error ->
+                                    Toast.makeText(this@AddRecipeActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                                }
+
                             }
-                            result.onFailure {error ->
-                                Toast.makeText(this@AddRecipeActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
-                            }
-
                         }
                     }
                 }
+            } else {
+                showToast(getString(R.string.fill_all_fields))
             }
         } ?: showToast(getString(R.string.empty_image_warning))
     }

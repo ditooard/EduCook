@@ -68,4 +68,5 @@
     <string name="login_success">Sign In Success</string>
     <string name="empty_image_warning">Please insert the image file first</string>
     <string name="upload_success">Recipe uploaded successfully</string>
+    <string name="fill_all_fields">Please fill in all fields</string>
 </resources>
