@@ -16,7 +16,7 @@
     <string name="edu_cook">EduCook</string>
     <string name="forgot_pass">Forgot password?</string>
     <string name="dont_have_acc">Don’t have an account?</string>
-    <string name="password_char">Password less than 8 characters</string>
+    <string name="password_char">Password less than 6 characters</string>
     <string name="arrow_back">Arrow Back</string>
     <string name="add_recipe">Add Recipe</string>
     <string name="profile">Profile</string>

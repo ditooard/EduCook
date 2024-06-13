@@ -1,12 +1,15 @@
 package com.bangkit2024.educook.api
 
+import com.bangkit2024.educook.api.model.LoginRequest
+import com.bangkit2024.educook.api.model.RegisterRequest
 import com.bangkit2024.educook.data.response.LoginResponse
-import com.bangkit2024.educook.data.response.RegisterResponse
 import com.bangkit2024.educook.data.response.MenuResponse
+import com.bangkit2024.educook.data.response.RegisterResponse
 import com.bangkit2024.educook.data.response.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
@@ -16,19 +19,14 @@ import retrofit2.http.Multipart
 import retrofit2.http.Part
 
 interface ApiService {
-    @FormUrlEncoded
-    @POST("register")
+    @POST("user/register")
     suspend fun register(
-        @Field("name") name: String,
-        @Field("email") email: String,
-        @Field("password") password: String
+        @Body request: RegisterRequest
     ): RegisterResponse
 
-    @FormUrlEncoded
-    @POST("login")
+    @POST("user/login")
     suspend fun login(
-        @Field("email") email: String,
-        @Field("password") password: String
+        @Body request: LoginRequest
     ): LoginResponse
 
     @GET("stories")

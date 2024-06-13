@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 8 && s.isNotEmpty()) {
+                if (s.length < 6 && s.isNotEmpty()) {
                     binding.passwordEditTextLayout.error = getString(R.string.password_char)
                 } else {
                     binding.passwordEditTextLayout.error = null
@@ -93,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.login(email, password).observe(this@LoginActivity) { result ->
                     binding.progressBar.visibility = View.GONE
                     result.onSuccess { response ->
-                        response.loginResult.token.let {token ->
+                        response.data.token.let {token ->
                             viewModel.saveToken(token)
                             Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)

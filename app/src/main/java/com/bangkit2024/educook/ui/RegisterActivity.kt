@@ -62,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 8 && s.isNotEmpty()) {
+                if (s.length < 6 && s.isNotEmpty()) {
                     binding.passwordEditTextLayout.error = getString(R.string.password_char)
                 } else {
                     binding.passwordEditTextLayout.error = null

@@ -3,25 +3,19 @@ package com.bangkit2024.educook.data.response
 import com.google.gson.annotations.SerializedName
 
 data class LoginResponse(
+	@field:SerializedName("role")
+	val role: String,
 
-	@field:SerializedName("loginResult")
-	val loginResult: LoginResult,
+	@field:SerializedName("data")
+	val data: Data,
 
-	@field:SerializedName("error")
-	val error: Boolean,
-
-	@field:SerializedName("message")
-	val message: String
+	@field:SerializedName("id")
+	val id: String,
 )
 
-data class LoginResult(
-
-	@field:SerializedName("name")
-	val name: String,
-
-	@field:SerializedName("userId")
-	val userId: String,
+data class Data(
 
 	@field:SerializedName("token")
 	val token: String
 )
+

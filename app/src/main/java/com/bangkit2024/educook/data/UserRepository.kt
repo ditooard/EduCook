@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.bangkit2024.educook.data.local.UserPreference
 import com.bangkit2024.educook.data.response.LoginResponse
-import com.bangkit2024.educook.data.response.RegisterResponse
 import com.bangkit2024.educook.api.ApiService
+import com.bangkit2024.educook.api.model.LoginRequest
+import com.bangkit2024.educook.api.model.RegisterRequest
+import com.bangkit2024.educook.data.response.ErrorResponse
+import com.bangkit2024.educook.data.response.RegisterResponse
 import com.bangkit2024.educook.data.response.UploadResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
@@ -19,24 +22,26 @@ class UserRepository(
 ) {
     suspend fun register(name: String, email: String, password: String): LiveData<Result<RegisterResponse>> = liveData {
         try {
-            val response = apiService.register(name, email, password)
+            val request = RegisterRequest(name, email, password)
+            val response = apiService.register(request)
             emit(Result.success(response))
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
-            val errorBody = Gson().fromJson(jsonInString, RegisterResponse::class.java)
-            val errorMessage = errorBody.message
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody?.error
             emit(Result.failure(Throwable(errorMessage)))
         }
     }
 
     suspend fun login(email: String, password: String): LiveData<Result<LoginResponse>> = liveData {
         try {
-            val response = apiService.login(email, password)
+            val request = LoginRequest(email, password)
+            val response = apiService.login(request)
             emit(Result.success(response))
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
-            val errorBody = Gson().fromJson(jsonInString, LoginResponse::class.java)
-            val errorMessage = errorBody.message
+            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+            val errorMessage = errorBody?.error
             emit(Result.failure(Throwable(errorMessage)))
         }
     }
