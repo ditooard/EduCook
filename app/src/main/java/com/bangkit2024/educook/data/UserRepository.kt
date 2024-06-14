@@ -48,11 +48,13 @@ class UserRepository(
 
     suspend fun addRecipe(
         token: String,
-        file: MultipartBody.Part,
-        desc: RequestBody
+        image: MultipartBody.Part,
+        title: RequestBody,
+        ingredients: RequestBody,
+        directions: RequestBody
     ): LiveData<Result<UploadResponse>> = liveData{
         try {
-            val response = apiService.addRecipe("Bearer $token", file, desc)
+            val response = apiService.addRecipe("Bearer $token", image, title, ingredients, directions)
             emit(Result.success(response))
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()

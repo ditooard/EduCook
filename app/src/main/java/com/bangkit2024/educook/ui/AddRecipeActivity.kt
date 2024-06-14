@@ -75,10 +75,12 @@ class AddRecipeActivity : AppCompatActivity() {
 
             if (title.isNotEmpty() && ingredients.isNotEmpty() && directions.isNotEmpty()) {
                 binding.progressBar.visibility = View.VISIBLE
-                val description = ingredients.toRequestBody("text/plain".toMediaType())
+                val titleRecipe = title.toRequestBody("text/plain".toMediaType())
+                val ingredientsRecipe = ingredients.toRequestBody("text/plain".toMediaType())
+                val directionsRecipe = directions.toRequestBody("text/plain".toMediaType())
                 val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
                 val image = MultipartBody.Part.createFormData(
-                    "photo",
+                    "image",
                     imageFile.name,
                     requestImageFile
                 )
@@ -86,7 +88,7 @@ class AddRecipeActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     viewModel.getToken().collect { token ->
                         if (token.isNotEmpty()) {
-                            viewModel.addRecipe(token, image, description).observe(this@AddRecipeActivity) { result ->
+                            viewModel.addRecipe(token, image, titleRecipe, ingredientsRecipe, directionsRecipe).observe(this@AddRecipeActivity) { result ->
                                 binding.progressBar.visibility = View.GONE
                                 result.onSuccess {
                                     Toast.makeText(this@AddRecipeActivity, getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
