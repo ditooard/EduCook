@@ -86,7 +86,7 @@
             android:layout_marginStart="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@drawable/ic_photo_profile" />
 
         <TextView
             android:id="@+id/tv_title_ingredient"

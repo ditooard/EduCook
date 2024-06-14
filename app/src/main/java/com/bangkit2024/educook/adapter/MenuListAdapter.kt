@@ -73,9 +73,6 @@ class MenuListAdapter(private var menu: List<DetailMenu>) :
         fun loadImage(imageView: ImageView, imageUrl: String) {
             Glide.with(imageView.context)
                 .load(imageUrl)
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_foreground)
-                .fallback(R.drawable.ic_launcher_foreground)
                 .into(imageView)
         }
 

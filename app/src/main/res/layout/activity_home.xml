@@ -133,17 +133,17 @@
 
         <ImageView
             android:id="@+id/noDataFound"
-            android:layout_width="100dp"
-            android:layout_height="110dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rv_users"
-            app:layout_constraintVertical_bias="0.379"
-            app:srcCompat="@drawable/no_data"
-            tools:visibility="visible" />
+            app:layout_constraintVertical_bias="0.1"
+            app:srcCompat="@drawable/ic_no_data"
+            tools:visibility="visible"
+            android:contentDescription="@string/no_data_found" />
 
         <ProgressBar
             android:id="@+id/progressBar3"

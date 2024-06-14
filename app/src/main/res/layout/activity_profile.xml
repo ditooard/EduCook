@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_logout" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/iv_detail_avatar"
         android:layout_width="130dp"
         android:layout_height="130dp"
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_logout"
-        tools:src="@tools:sample/avatars" />
+        app:srcCompat="@drawable/ic_photo_profile" />
 
     <TextView
         android:id="@+id/tv_username"
@@ -85,9 +85,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:backgroundTint="?attr/colorSecondary"
-        android:layout_marginBottom="30dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:paddingBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,16 +96,14 @@
 
     <ImageView
         android:id="@+id/noDataFound"
-        android:layout_width="100dp"
-        android:layout_height="110dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_users"
-        app:layout_constraintVertical_bias="0.539"
-        app:srcCompat="@drawable/no_data"
+        app:srcCompat="@drawable/ic_no_data"
         tools:visibility="visible" />
 
     <ProgressBar

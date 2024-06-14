@@ -121,7 +121,6 @@ class DetailRecipeActivity : AppCompatActivity() {
         }
         Glide.with(this)
             .load(storyDetails.photoUrl)
-            .placeholder(R.drawable.ic_launcher_foreground)
             .into(binding.ivPhoto)
     }
 
