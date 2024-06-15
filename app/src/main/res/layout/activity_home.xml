@@ -140,7 +140,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/rv_users"
-            app:layout_constraintVertical_bias="0.1"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_no_data"
             tools:visibility="visible"
             android:contentDescription="@string/no_data_found" />
