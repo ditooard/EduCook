@@ -34,10 +34,8 @@ interface ApiService {
         @Header("Authorization") authToken: String,
     ): Call<MenuResponse>
 
-    @GET("api/v1/recipe")
+    @GET("recipe")
     fun getRecipes(@Query("page") page: Int): Call<RecipeResponse>
-
-
 
     @Multipart
     @POST("recipe")
