@@ -1,10 +1,10 @@
 package com.bangkit2024.educook.ui.nav_activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.bangkit2024.educook.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -16,23 +16,26 @@ class BottomFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val view =  inflater.inflate(R.layout.fragment_bottom, container, false)
+        val view = inflater.inflate(R.layout.fragment_bottom, container, false)
 
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId){
+            when (it.itemId) {
                 R.id.bottom_home -> {
                     replaceFragment(HomeActivity())
                     activity?.title = "Home"
                 }
+
                 R.id.bottom_search -> {
                     replaceFragment(SearchActivity())
                     activity?.title = "Search"
                 }
+
                 R.id.bottom_bookmark -> {
                     replaceFragment(BookmarkActivity())
                     activity?.title = "Bookmark"
                 }
+
                 R.id.bottom_profile -> {
                     replaceFragment(ProfileActivity())
                     activity?.title = "Profile"
@@ -52,10 +55,11 @@ class BottomFragment : Fragment() {
         }
         return view
     }
+
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.bottomFragment,fragment)
+            .replace(R.id.bottomFragment, fragment)
             .commit()
     }
 }

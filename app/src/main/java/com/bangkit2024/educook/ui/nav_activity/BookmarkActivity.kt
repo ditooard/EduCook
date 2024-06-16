@@ -14,12 +14,14 @@ import com.bangkit2024.educook.data.response.Recipe
 import com.bangkit2024.educook.databinding.ActivityBookmarkBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
 import com.bangkit2024.educook.viewmodel.BookmarkViewModel
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class BookmarkActivity : Fragment() {
 
-    private lateinit var binding: ActivityBookmarkBinding
+    private var _binding: ActivityBookmarkBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: RecipeAdapter
     private lateinit var viewModel: BookmarkViewModel
 
@@ -27,10 +29,9 @@ class BookmarkActivity : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = ActivityBookmarkBinding.inflate(inflater, container, false)
+        _binding = ActivityBookmarkBinding.inflate(inflater, container, false)
 
         adapter = RecipeAdapter(requireContext(), arrayListOf())
-
         binding.rvUsers.adapter = adapter
         binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
 
@@ -46,24 +47,23 @@ class BookmarkActivity : Fragment() {
             }
         })
 
-//        adapter.setOnItemClickListener { recipe ->
-//            navigateToDetailRecipeActivity(recipe)
-//        }
+        adapter.setOnItemClickListener { recipe ->
+            navigateToDetailRecipeActivity(recipe)
+        }
 
         return binding.root
     }
 
     private fun mapList(bookmarkMenus: List<BookmarkMenu>): ArrayList<Recipe> {
         val detailMenus = ArrayList<Recipe>()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
         for (bookmarkMenu in bookmarkMenus) {
             val recipe = Recipe(
                 id = bookmarkMenu.id,
                 title = bookmarkMenu.title,
                 directions = bookmarkMenu.directions,
                 ingredients = bookmarkMenu.ingredients,
-                createdAt = dateFormat.parse(bookmarkMenu.createdAt) ?: Date(),
-                updatedAt = dateFormat.parse(bookmarkMenu.updatedAt) ?: Date(),
+                createdAt = parseDate(bookmarkMenu.createdAt),
+                updatedAt = parseDate(bookmarkMenu.updatedAt.toString()),
                 imageId = bookmarkMenu.imageId ?: "",
                 idUser = bookmarkMenu.idUser ?: ""
             )
@@ -72,10 +72,33 @@ class BookmarkActivity : Fragment() {
         return detailMenus
     }
 
-//    private fun navigateToDetailRecipeActivity(menu: Recipe) {
-//        val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-//            putExtra(DetailRecipeActivity.MENU, menu)
-//        }
-//        startActivity(intent)
-//    }
+    private fun parseDate(dateString: String): Date {
+        val formats = listOf(
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()),
+            SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+        )
+
+        for (format in formats) {
+            try {
+                return format.parse(dateString) ?: Date()
+            } catch (e: ParseException) {
+                // Try next format
+            }
+        }
+
+        // If no format matches, return current date or handle the error as needed
+        return Date()
+    }
+
+    private fun navigateToDetailRecipeActivity(menu: Recipe) {
+        val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
+            putExtra(DetailRecipeActivity.MENU, menu)
+        }
+        startActivity(intent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

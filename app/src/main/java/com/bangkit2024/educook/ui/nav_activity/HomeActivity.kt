@@ -58,7 +58,7 @@ class HomeActivity : Fragment() {
 
         adapter.setOnItemClickListener { recipe ->
             val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-                putExtra("recipe", recipe)  // Menggunakan key 'recipe' untuk data Recipe
+                putExtra(DetailRecipeActivity.MENU, recipe)  // Use the constant key from DetailRecipeActivity
             }
             startActivity(intent)
         }

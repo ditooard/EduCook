@@ -2,124 +2,146 @@ package com.bangkit2024.educook.ui.nav_activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bangkit2024.educook.adapter.MenuListAdapter
-import com.bangkit2024.educook.data.local.UserPreference
-import com.bangkit2024.educook.data.local.dataStore
-import com.bangkit2024.educook.data.response.DetailMenu
+import androidx.recyclerview.widget.RecyclerView
+import com.bangkit2024.educook.adapter.RecipeAdapter
+import com.bangkit2024.educook.api.RetrofitClient
+import com.bangkit2024.educook.data.response.RecipeResponse
 import com.bangkit2024.educook.databinding.ActivitySearchBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
-import com.bangkit2024.educook.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchActivity : Fragment() {
 
-    private lateinit var binding: ActivitySearchBinding
-    private lateinit var userToken: String
-    private lateinit var adapter: MenuListAdapter
-    private var allStories: List<DetailMenu> = emptyList()
+    private lateinit var recipeRecyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var adapter: RecipeAdapter
 
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(this)[HomeViewModel::class.java]
-    }
+    private var currentPage = 1  // Start from page 1
+    private var isLoading = false
+    private var hasNextPage = true
+
+    private lateinit var binding: ActivitySearchBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+        savedInstanceState: Bundle?
+    ): View? {
         binding = ActivitySearchBinding.inflate(inflater, container, false)
-        setupRecyclerView()
-        initializeUserPreferences()
-        setupObservers()
-        setupSearchView()
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recipeRecyclerView = binding.rvUsers
+        progressBar = binding.progressBar3
+
+        setupRecyclerView()
+
+        adapter.setOnItemClickListener { recipe ->
+            val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
+                putExtra(DetailRecipeActivity.MENU, recipe)
+            }
+            startActivity(intent)
+        }
+
+        // Load initial data
+        fetchRecipes()
+    }
+
     private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.rvUsers.layoutManager = layoutManager
-        binding.rvUsers.addItemDecoration(
-            DividerItemDecoration(requireContext(), layoutManager.orientation)
+        adapter = RecipeAdapter(requireContext(), mutableListOf())
+        recipeRecyclerView.adapter = adapter
+        recipeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recipeRecyclerView.addItemDecoration(
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
-        adapter = MenuListAdapter(emptyList())
-        binding.rvUsers.adapter = adapter
-    }
 
-    private fun initializeUserPreferences() {
-        val preferences = UserPreference.getInstance(requireContext().dataStore)
+        recipeRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        lifecycleScope.launch {
-            preferences.getToken().collect { token ->
-                userToken = token
-                homeViewModel.fetchStories(userToken)
+                // Jika pengguna mencapai atau melewati item terakhir yang terlihat
+                if (!isLoading && hasNextPage) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && firstVisibleItemPosition >= 0
+                    ) {
+                        fetchRecipes()
+                    }
+                }
             }
-        }
+        })
+
+
     }
 
-    private fun setupObservers() {
-        homeViewModel.stories.observe(viewLifecycleOwner) { stories ->
-            allStories = stories
-            displayStories(stories)
-        }
+    private fun fetchRecipes() {
+        if (!isAdded) return  // Ensure the fragment is still added
 
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            toggleLoadingIndicator(isLoading)
-        }
-    }
+        isLoading = true
+        progressBar.visibility = View.VISIBLE
 
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+        Log.d("SearchActivity", "Fetching recipes. Current page: $currentPage")
+
+        RetrofitClient.api.getRecipes(currentPage).enqueue(object : Callback<RecipeResponse> {
+            override fun onResponse(
+                call: Call<RecipeResponse>,
+                response: Response<RecipeResponse>
+            ) {
+                if (!isAdded) return  // Ensure the fragment is still added
+
+                if (response.isSuccessful) {
+                    val recipeResponse = response.body()
+                    if (recipeResponse != null) {
+                        Log.d("SearchActivity", "Recipes fetched successfully.")
+                        // Tambahkan data baru ke adapter tanpa mengganti data yang ada
+                        adapter.addRecipes(recipeResponse.data)
+                        hasNextPage = recipeResponse.pagination.hasNextPage
+                        currentPage++
+                        Log.d(
+                            "SearchActivity",
+                            "Next page: $currentPage, hasNextPage: $hasNextPage"
+                        )
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("SearchActivity", "Error: ${response.code()}, $errorBody")
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal memuat resep, Error ${response.code()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                isLoading = false
+                progressBar.visibility = View.GONE
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filterStories(newText.orEmpty())
-                return true
+            override fun onFailure(call: Call<RecipeResponse>, t: Throwable) {
+                if (!isAdded) return  // Ensure the fragment is still added
+
+                Log.e("SearchActivity", "Failure: ${t.message}")
+                Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
+
+                isLoading = false
+                progressBar.visibility = View.GONE
             }
         })
     }
 
-    private fun displayStories(stories: List<DetailMenu>) {
-        toggleNoDataMessage(stories.isEmpty())
-
-        // Menggunakan metode updateData pada adapter
-        adapter.updateData(stories)
-
-        // Mengatur callback click pada adapter
-        adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
-            override fun onStoryClicked(story: DetailMenu) {
-                navigateToDetailRecipeActivity(story)
-            }
-        })
-    }
-
-    private fun filterStories(query: String) {
-        val filteredStories = allStories.filter { story ->
-            story.name.contains(query, ignoreCase = true) || story.description.contains(query, ignoreCase = true)
-        }
-        displayStories(filteredStories)
-    }
-
-    private fun navigateToDetailRecipeActivity(story: DetailMenu) {
-        val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-            putExtra(DetailRecipeActivity.MENU, story)
-        }
-        startActivity(intent)
-    }
-
-    private fun toggleNoDataMessage(isEmpty: Boolean) {
-        binding.noDataFound.visibility = if (isEmpty) View.VISIBLE else View.GONE
-    }
-
-    private fun toggleLoadingIndicator(isVisible: Boolean) {
-        binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
 }

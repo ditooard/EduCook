@@ -15,10 +15,11 @@ interface BookmarkDao {
     fun getBookmark(): LiveData<List<BookmarkMenu>>
 
     @Query("SELECT count(*) FROM bookmark WHERE bookmark.id = :id")
-    fun checkBookmark(id: String): Int
+    fun checkBookmark(id: String): LiveData<Int>
 
     @Query("DELETE FROM bookmark WHERE bookmark.id = :id")
-    fun removeBookmark(id: String): Int
+    fun removeBookmark(id: String)
 }
+
 
 

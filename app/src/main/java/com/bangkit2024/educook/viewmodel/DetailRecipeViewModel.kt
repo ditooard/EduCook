@@ -2,6 +2,7 @@ package com.bangkit2024.educook.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.bangkit2024.educook.data.local.BookmarkDao
 import com.bangkit2024.educook.data.local.BookmarkDatabase
 import com.bangkit2024.educook.data.local.BookmarkMenu
@@ -24,7 +25,7 @@ class DetailRecipeViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun checkBookmark(id: String) = daoBookmark?.checkBookmark(id)
+    fun checkBookmark(id: String): LiveData<Int>? = daoBookmark?.checkBookmark(id)
 
     fun removeBookmark(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
