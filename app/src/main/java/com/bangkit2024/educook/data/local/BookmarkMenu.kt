@@ -7,10 +7,11 @@ import java.io.Serializable
 @Entity(tableName = "bookmark")
 data class BookmarkMenu(
     @PrimaryKey val id: String,
-    val name: String,
-    val description: String,
-    val photoUrl: String,
+    val title: String,
+    val directions: String,
+    val ingredients: String,
     val createdAt: String,
-    val lat: Double,
-    val lon: Double
+    val updatedAt: String?,
+    val imageId: String?,
+    val idUser: String?
 ) : Serializable

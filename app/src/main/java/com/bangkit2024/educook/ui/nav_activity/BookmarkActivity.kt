@@ -8,23 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bangkit2024.educook.adapter.MenuListAdapter
+import com.bangkit2024.educook.adapter.RecipeAdapter
 import com.bangkit2024.educook.data.local.BookmarkMenu
-import com.bangkit2024.educook.data.response.DetailMenu
+import com.bangkit2024.educook.data.response.Recipe
 import com.bangkit2024.educook.databinding.ActivityBookmarkBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
 import com.bangkit2024.educook.viewmodel.BookmarkViewModel
-import com.bangkit2024.educook.viewmodel.HomeViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class BookmarkActivity : Fragment() {
 
     private lateinit var binding: ActivityBookmarkBinding
-    private lateinit var adapter: MenuListAdapter
+    private lateinit var adapter: RecipeAdapter
     private lateinit var viewModel: BookmarkViewModel
-
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(this)[HomeViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,66 +29,53 @@ class BookmarkActivity : Fragment() {
     ): View {
         binding = ActivityBookmarkBinding.inflate(inflater, container, false)
 
-        val adapter = MenuListAdapter(arrayListOf())
+        adapter = RecipeAdapter(requireContext(), arrayListOf())
 
         binding.rvUsers.adapter = adapter
-
-        val onStoryClickCallback = object : MenuListAdapter.OnStoryClickCallback {
-            override fun onStoryClicked(story: DetailMenu) {
-                navigateToDetailRecipeActivity(story)
-            }
-        }
-        adapter.setOnStoryClickCallback(onStoryClickCallback)
-
-        // Tambahkan LinearLayoutManager
         binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
-
-        binding.rvUsers.adapter = adapter
 
         viewModel = ViewModelProvider(this).get(BookmarkViewModel::class.java)
 
         viewModel.getBookmarkList()?.observe(viewLifecycleOwner, { favoriteUsers ->
             if (favoriteUsers.isNullOrEmpty()) {
-                // Menampilkan layout kosong jika daftar favorit kosong
                 binding.rvUsers.visibility = View.GONE
             } else {
-                // Menampilkan daftar favorit jika ada data
                 val bookmarkList = mapList(favoriteUsers)
-                adapter.updateData(bookmarkList)
-
+                adapter.addRecipes(bookmarkList)
                 binding.rvUsers.visibility = View.VISIBLE
-                adapter.notifyDataSetChanged() // Memperbarui recyclerview
             }
         })
+
+//        adapter.setOnItemClickListener { recipe ->
+//            navigateToDetailRecipeActivity(recipe)
+//        }
 
         return binding.root
     }
 
-
-    private fun mapList(bookmarkMenus: List<BookmarkMenu>): ArrayList<DetailMenu> {
-        val detailMenus = ArrayList<DetailMenu>()
+    private fun mapList(bookmarkMenus: List<BookmarkMenu>): ArrayList<Recipe> {
+        val detailMenus = ArrayList<Recipe>()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
         for (bookmarkMenu in bookmarkMenus) {
-            val detailMenu = DetailMenu(
-                bookmarkMenu.id,
-                bookmarkMenu.name,
-                bookmarkMenu.description,
-                bookmarkMenu.photoUrl,
-                bookmarkMenu.createdAt,
-                bookmarkMenu.lat,
-                bookmarkMenu.lon
+            val recipe = Recipe(
+                id = bookmarkMenu.id,
+                title = bookmarkMenu.title,
+                directions = bookmarkMenu.directions,
+                ingredients = bookmarkMenu.ingredients,
+                createdAt = dateFormat.parse(bookmarkMenu.createdAt) ?: Date(),
+                updatedAt = dateFormat.parse(bookmarkMenu.updatedAt) ?: Date(),
+                imageId = bookmarkMenu.imageId ?: "",
+                idUser = bookmarkMenu.idUser ?: ""
             )
-            detailMenus.add(detailMenu)
+            detailMenus.add(recipe)
         }
         return detailMenus
     }
 
-
-    private fun navigateToDetailRecipeActivity(menu: DetailMenu) {
-        val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-            putExtra(DetailRecipeActivity.MENU, menu)
-        }
-        startActivity(intent)
-    }
-
-    companion object
+//    private fun navigateToDetailRecipeActivity(menu: Recipe) {
+//        val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
+//            putExtra(DetailRecipeActivity.MENU, menu)
+//        }
+//        startActivity(intent)
+//    }
 }

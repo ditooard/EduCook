@@ -2,13 +2,13 @@ package com.bangkit2024.educook.ui
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bangkit2024.educook.R
-import com.bangkit2024.educook.adapter.MenuListAdapter
 import com.bangkit2024.educook.data.local.BookmarkMenu
-import com.bangkit2024.educook.data.response.DetailMenu
+import com.bangkit2024.educook.data.response.Recipe
 import com.bangkit2024.educook.databinding.ActivityDetailRecipeBinding
 import com.bangkit2024.educook.viewmodel.DetailRecipeViewModel
 import com.bumptech.glide.Glide
@@ -20,37 +20,37 @@ import kotlinx.coroutines.withContext
 class DetailRecipeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailRecipeBinding
     private lateinit var viewModel: DetailRecipeViewModel
+    private var menuDetails: Recipe? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailRecipeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Mendapatkan data dari intent
-        val menuDetails = intent.getParcelableExtra<DetailMenu>(MENU)
+        menuDetails = intent.getSerializableExtra(MENU) as? Recipe
+
         if (menuDetails == null) {
-            // Menampilkan pesan kesalahan jika data tidak tersedia
-            Toast.makeText(
-                this@DetailRecipeActivity,
-                "Menu information is incomplete",
-                Toast.LENGTH_SHORT
-            ).show()
-            // Finish activity jika data tidak lengkap
+            Toast.makeText(this, "Recipe data is missing", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        displayStoryDetails(menuDetails)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.apply {
-            ibArrowBack.setOnClickListener { finish() }
+
+            val title = intent.getStringExtra("title")
+            val ingredients = intent.getStringExtra("ingredients")
+            val directions = intent.getStringExtra("directions")
+
+            tvTitle.text = title
+            tvIngredient.text = ingredients
+            tvDirections.text = directions
 
             viewModel = ViewModelProvider(this@DetailRecipeActivity).get(DetailRecipeViewModel::class.java)
 
             var _Checked = false
             CoroutineScope(Dispatchers.IO).launch {
-                val count = menuDetails.id?.let { viewModel.checkBookmark(it) }
+                val count = menuDetails?.id?.let { viewModel.checkBookmark(it) }
                 withContext(Dispatchers.Main) {
                     if (count != null) {
                         _Checked = count > 0
@@ -62,21 +62,25 @@ class DetailRecipeActivity : AppCompatActivity() {
             ibBookmark.setOnClickListener {
                 _Checked = !_Checked
                 if (_Checked) {
-                    if (menuDetails.id != null &&
-                        menuDetails.name != null &&
-                        menuDetails.photoUrl != null &&
-                        menuDetails.description != null &&
-                        menuDetails.createdAt != null
+                    if (menuDetails?.id != null &&
+                        menuDetails?.title != null &&
+                        menuDetails?.directions != null &&
+                        menuDetails?.ingredients != null &&
+                        menuDetails?.createdAt != null &&
+                        menuDetails?.updatedAt != null &&
+                        menuDetails?.imageId != null &&
+                        menuDetails?.idUser != null
                     ) {
                         Log.d("addToBookmark", "success")
                         val bookmarkMenu = BookmarkMenu(
-                            menuDetails.id,
-                            menuDetails.name,
-                            menuDetails.description,
-                            menuDetails.photoUrl,
-                            menuDetails.createdAt,
-                            menuDetails.lat,
-                            menuDetails.lon
+                            menuDetails!!.id,
+                            menuDetails!!.title,
+                            menuDetails!!.directions,
+                            menuDetails!!.ingredients,
+                            menuDetails!!.createdAt.toString(),
+                            menuDetails!!.updatedAt.toString(),
+                            menuDetails!!.imageId,
+                            menuDetails!!.idUser,
                         )
                         viewModel.addBookmark(bookmarkMenu)
                     } else {
@@ -94,8 +98,8 @@ class DetailRecipeActivity : AppCompatActivity() {
                     ).show()
                 } else {
                     Log.d("removeFromBookmark", "success")
-                    if (menuDetails.id != null) {
-                        viewModel.removeBookmark(menuDetails.id)
+                    if (menuDetails?.id != null) {
+                        viewModel.removeBookmark(menuDetails!!.id)
                     }
                     Toast.makeText(
                         this@DetailRecipeActivity,
@@ -106,6 +110,7 @@ class DetailRecipeActivity : AppCompatActivity() {
                 ibBookmark.isChecked = _Checked
             }
         }
+        displayStoryDetails(menuDetails!!)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -113,25 +118,18 @@ class DetailRecipeActivity : AppCompatActivity() {
         return true
     }
 
-    private fun displayStoryDetails(storyDetails: DetailMenu) {
+    private fun displayStoryDetails(storyDetails: Recipe) {
         binding.apply {
-            tvUsername.text = storyDetails.name
-            tvIngredient.text = storyDetails.description
-            tvDirections.text = MenuListAdapter.convertDateToFormattedString(storyDetails.createdAt)
+            tvTitle.text = storyDetails.title
+            tvIngredient.text = storyDetails.ingredients
+            tvDirections.text = storyDetails.directions
         }
         Glide.with(this)
-            .load(storyDetails.photoUrl)
+            .load(storyDetails.imageId)
             .into(binding.ivPhoto)
     }
 
     companion object {
         const val MENU = "extra_menu"
-        const val NAME = "extra_name"
-        const val ID = "extra_id"
-        const val PHOTO_URL = "extra_photo_url"
-        const val DESCRIPTION = "extra_description"
-        const val CREATED_AT = "extra_created_at"
-        const val LAT = "extra_lat"
-        const val LON = "extra_lon"
     }
 }
