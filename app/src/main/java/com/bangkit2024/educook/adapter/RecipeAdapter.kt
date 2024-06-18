@@ -10,12 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.data.response.Recipe
 import com.bumptech.glide.Glide
+import android.widget.Filter
+import android.widget.Filterable
 
 class RecipeAdapter(
     private val context: Context,
     private val recipes: MutableList<Recipe>
-) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>(), Filterable {
 
+    private var filteredRecipes: MutableList<Recipe> = recipes.toMutableList()
     private var onItemClickListener: ((Recipe) -> Unit)? = null
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,9 +32,10 @@ class RecipeAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val recipe = recipes[position]
+        val recipe = filteredRecipes[position]
         Glide.with(context)
-            .load(recipe.imageId)
+            .load(recipe.imageUrl)
+            .placeholder(R.drawable.blank_photo) // Set placeholder image
             .into(holder.image)
         holder.titleTextView.text = recipe.title
 
@@ -41,16 +45,43 @@ class RecipeAdapter(
     }
 
     override fun getItemCount(): Int {
-        return recipes.size
+        return filteredRecipes.size
     }
 
     fun addRecipes(newRecipes: List<Recipe>) {
         recipes.clear()
         recipes.addAll(newRecipes)
+        filteredRecipes = recipes.toMutableList()
         notifyDataSetChanged()
     }
 
     fun setOnItemClickListener(listener: (Recipe) -> Unit) {
         onItemClickListener = listener
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val query = constraint?.toString()?.lowercase() ?: ""
+                val filteredList = if (query.isEmpty()) {
+                    recipes
+                } else {
+                    recipes.filter {
+                        it.title.lowercase().contains(query) ||
+                                it.ingredients.lowercase().contains(query) ||
+                                it.directions.lowercase().contains(query)
+                    }
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredList
+                return filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredRecipes = results?.values as MutableList<Recipe>
+                notifyDataSetChanged()
+            }
+        }
     }
 }

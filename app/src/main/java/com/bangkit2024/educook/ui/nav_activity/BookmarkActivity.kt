@@ -65,7 +65,8 @@ class BookmarkActivity : Fragment() {
                 createdAt = parseDate(bookmarkMenu.createdAt),
                 updatedAt = parseDate(bookmarkMenu.updatedAt.toString()),
                 imageId = bookmarkMenu.imageId ?: "",
-                idUser = bookmarkMenu.idUser ?: ""
+                idUser = bookmarkMenu.idUser ?: "",
+                imageUrl = bookmarkMenu.imageUrl ?: ""
             )
             detailMenus.add(recipe)
         }

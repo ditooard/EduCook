@@ -12,8 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
 import com.bangkit2024.educook.adapter.RecipeAdapter
 import com.bangkit2024.educook.api.RetrofitClient
+import com.bangkit2024.educook.data.response.ImageResponse
+import com.bangkit2024.educook.data.response.Recipe
 import com.bangkit2024.educook.data.response.RecipeResponse
 import com.bangkit2024.educook.databinding.ActivitySearchBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
@@ -26,8 +29,9 @@ class SearchActivity : Fragment() {
     private lateinit var recipeRecyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: RecipeAdapter
+    private lateinit var searchView: SearchView
 
-    private var currentPage = 1  // Start from page 1
+    private var currentPage = 0
     private var isLoading = false
     private var hasNextPage = true
 
@@ -46,6 +50,7 @@ class SearchActivity : Fragment() {
 
         recipeRecyclerView = binding.rvUsers
         progressBar = binding.progressBar3
+        searchView = binding.searchView
 
         setupRecyclerView()
 
@@ -58,6 +63,19 @@ class SearchActivity : Fragment() {
 
         // Load initial data
         fetchRecipes()
+
+        // Set up search functionality
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                adapter.filter.filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return false
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -76,22 +94,36 @@ class SearchActivity : Fragment() {
                 val totalItemCount = layoutManager.itemCount
                 val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-                // Jika pengguna mencapai atau melewati item terakhir yang terlihat
                 if (!isLoading && hasNextPage) {
                     if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0
-                    ) {
+                        && totalItemCount >= 20
+                    ) { // assuming 20 is the page size
                         fetchRecipes()
                     }
                 }
             }
         })
+    }
 
+    private fun fetchImage(imageId: String, callback: (String?) -> Unit) {
+        RetrofitClient.api.getImages(imageId).enqueue(object : Callback<ImageResponse> {
+            override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
+                if (response.isSuccessful) {
+                    callback(response.body()?.data?.url)
+                } else {
+                    callback(null)
+                }
+            }
 
+            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
+                callback(null)
+            }
+        })
     }
 
     private fun fetchRecipes() {
-        if (!isAdded) return  // Ensure the fragment is still added
+        if (!isAdded) return // Ensure the fragment is still added
 
         isLoading = true
         progressBar.visibility = View.VISIBLE
@@ -109,14 +141,23 @@ class SearchActivity : Fragment() {
                     val recipeResponse = response.body()
                     if (recipeResponse != null) {
                         Log.d("SearchActivity", "Recipes fetched successfully.")
-                        // Tambahkan data baru ke adapter tanpa mengganti data yang ada
-                        adapter.addRecipes(recipeResponse.data)
-                        hasNextPage = recipeResponse.pagination.hasNextPage
-                        currentPage++
-                        Log.d(
-                            "SearchActivity",
-                            "Next page: $currentPage, hasNextPage: $hasNextPage"
-                        )
+
+                        val recipes = recipeResponse.data
+                        val updatedRecipes = mutableListOf<Recipe>()
+
+                        for (recipe in recipes) {
+                            fetchImage(recipe.imageId) { imageUrl ->
+                                recipe.imageUrl = imageUrl
+                                updatedRecipes.add(recipe)
+                                if (updatedRecipes.size == recipes.size) {
+                                    adapter.addRecipes(updatedRecipes)
+                                    hasNextPage = recipeResponse.pagination.hasNextPage
+                                    currentPage++
+                                    isLoading = false
+                                    progressBar.visibility = View.GONE
+                                }
+                            }
+                        }
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -126,10 +167,9 @@ class SearchActivity : Fragment() {
                         "Gagal memuat resep, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
+                    isLoading = false
+                    progressBar.visibility = View.GONE
                 }
-
-                isLoading = false
-                progressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<RecipeResponse>, t: Throwable) {
@@ -143,5 +183,4 @@ class SearchActivity : Fragment() {
             }
         })
     }
-
 }

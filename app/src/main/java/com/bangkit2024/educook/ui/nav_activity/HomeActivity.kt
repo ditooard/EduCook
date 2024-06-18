@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.adapter.RecipeAdapter
 import com.bangkit2024.educook.api.RetrofitClient
+import com.bangkit2024.educook.data.response.ImageResponse
+import com.bangkit2024.educook.data.response.Recipe
 import com.bangkit2024.educook.data.response.RecipeResponse
 import com.bangkit2024.educook.databinding.ActivityHomeBinding
 import com.bangkit2024.educook.ui.AddRecipeActivity
@@ -94,8 +96,30 @@ class HomeActivity : Fragment() {
         })
     }
 
+    private fun fetchImage(imageId: String, callback: (String?) -> Unit) {
+        Log.d("HomeActivity", "Fetching image for imageId: $imageId") // Log imageId
+        RetrofitClient.api.getImages(imageId).enqueue(object : Callback<ImageResponse> {
+            override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
+                if (response.isSuccessful) {
+                    val imageUrl = response.body()?.data?.url
+                    Log.d("HomeActivity", "Image URL fetched: $imageUrl") // Log for checking image URL
+                    callback(imageUrl)
+                } else {
+                    Log.e("HomeActivity", "Failed to fetch image URL: ${response.code()}")
+                    callback(null)
+                }
+            }
+
+            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
+                Log.e("HomeActivity", "Error fetching image URL: ${t.message}")
+                callback(null)
+            }
+        })
+    }
+
+
     private fun fetchRecipes() {
-        if (!isAdded) return  // Ensure the fragment is still added
+        if (!isAdded) return
 
         isLoading = true
         progressBar.visibility = View.VISIBLE
@@ -113,10 +137,23 @@ class HomeActivity : Fragment() {
                     val recipeResponse = response.body()
                     if (recipeResponse != null) {
                         Log.d("HomeActivity", "Recipes fetched successfully.")
-                        adapter.addRecipes(recipeResponse.data)
-                        hasNextPage = recipeResponse.pagination.hasNextPage
-                        currentPage++
-                        Log.d("HomeActivity", "Next page: $currentPage, hasNextPage: $hasNextPage")
+
+                        val recipes = recipeResponse.data
+                        val updatedRecipes = mutableListOf<Recipe>()
+
+                        for (recipe in recipes) {
+                            fetchImage(recipe.imageId) { imageUrl ->
+                                recipe.imageUrl = imageUrl
+                                updatedRecipes.add(recipe)
+                                if (updatedRecipes.size == recipes.size) {
+                                    adapter.addRecipes(updatedRecipes)
+                                    hasNextPage = recipeResponse.pagination.hasNextPage
+                                    currentPage++
+                                    isLoading = false
+                                    progressBar.visibility = View.GONE
+                                }
+                            }
+                        }
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -126,10 +163,9 @@ class HomeActivity : Fragment() {
                         "Gagal memuat resep, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
+                    isLoading = false
+                    progressBar.visibility = View.GONE
                 }
-
-                isLoading = false
-                progressBar.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<RecipeResponse>, t: Throwable) {

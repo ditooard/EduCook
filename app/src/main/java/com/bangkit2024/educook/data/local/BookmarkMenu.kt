@@ -13,5 +13,6 @@ data class BookmarkMenu(
     val createdAt: String,
     val updatedAt: String?,
     val imageId: String?,
-    val idUser: String?
+    val idUser: String?,
+    val imageUrl : String?
 ) : Serializable

@@ -17,7 +17,8 @@ data class Recipe(
     @SerializedName("createdAt") val createdAt: Date,
     @SerializedName("updatedAt") val updatedAt: Date,
     @SerializedName("imageId") val imageId: String,
-    @SerializedName("idUser") val idUser: String
+    @SerializedName("idUser") val idUser: String,
+    var imageUrl: String? = null // Tambahkan properti ini
 ) : Serializable
 
 data class Pagination(

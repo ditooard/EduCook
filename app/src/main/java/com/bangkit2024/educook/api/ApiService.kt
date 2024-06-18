@@ -2,6 +2,7 @@ package com.bangkit2024.educook.api
 
 import com.bangkit2024.educook.api.model.LoginRequest
 import com.bangkit2024.educook.api.model.RegisterRequest
+import com.bangkit2024.educook.data.response.ImageResponse
 import com.bangkit2024.educook.data.response.LoginResponse
 import com.bangkit2024.educook.data.response.MenuResponse
 import com.bangkit2024.educook.data.response.RecipeResponse
@@ -16,6 +17,7 @@ import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -36,6 +38,9 @@ interface ApiService {
 
     @GET("recipe")
     fun getRecipes(@Query("page") page: Int): Call<RecipeResponse>
+
+    @GET("image/{id}")
+    fun getImages(@Path("id") id: String): Call<ImageResponse>
 
     @Multipart
     @POST("recipe")
