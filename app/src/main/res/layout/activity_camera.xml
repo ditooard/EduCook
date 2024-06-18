@@ -15,7 +15,6 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/insert_photo"
-        android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +30,7 @@
         android:background="@drawable/button_background"
         android:text="@string/camera"
         android:textColor="@color/white"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/roboto_medium"
         app:layout_constraintEnd_toStartOf="@id/verticalGuideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_insert_photo" />
@@ -55,24 +54,49 @@
         android:background="@drawable/button_background"
         android:text="@string/gallery"
         android:textColor="@color/white"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/roboto_medium"
         app:layout_constraintStart_toEndOf="@id/verticalGuideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_insert_photo" />
 
     <Button
-        android:id="@+id/btnAnalyze"
+        android:id="@+id/btnRecommend"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/button_background"
-        android:text="@string/analyze"
+        android:text="@string/recommendation"
         android:textColor="@color/white"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/roboto_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/galleryButton" />
 
+    <TextView
+        android:id="@+id/tv_predict"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRecommend" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
