@@ -10,18 +10,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.databinding.ActivityCameraBinding
-import com.bangkit2024.educook.helper.ImageClassifierHelper
 import com.bangkit2024.educook.util.getImageUri
 import com.bangkit2024.educook.util.reduceFileImage
 import com.bangkit2024.educook.util.uriToFile
-import org.tensorflow.lite.task.vision.classifier.Classifications
+import com.bangkit2024.educook.viewmodel.RecommendViewModel
+import com.bangkit2024.educook.viewmodel.ViewModelFactory
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 
 class CameraActivity : Fragment() {
     private lateinit var binding: ActivityCameraBinding
     private var currentImageUri: Uri? = null
-    private lateinit var imageClassifierHelper: ImageClassifierHelper
+    private val viewModel by viewModels<RecommendViewModel>{
+        ViewModelFactory.getInstance(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,33 +80,26 @@ class CameraActivity : Fragment() {
     private fun predictImage(){
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, requireContext()).reduceFileImage()
-            Log.d("Image Classification File", "showImage: ${imageFile.path}")
+            Log.d("Image File", "showImage: ${imageFile.path}")
+            val requestImageFile = imageFile.asRequestBody("image/*".toMediaType())
+            val image = MultipartBody.Part.createFormData(
+                "gambar",
+                imageFile.name,
+                requestImageFile
+            )
             showLoading(true)
-            imageClassifierHelper = ImageClassifierHelper(
-                context = requireContext(),
-                classifierListener = object : ImageClassifierHelper.ClassifierListener {
-                    override fun onError(error: String) {
-                        showToast(error)
-                        showLoading(false)
-                    }
-
-                    override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
-                        showLoading(false)
-                        results?.let { it ->
-                            if (it.isNotEmpty() && it[0].categories.isNotEmpty()) {
-                                println(it)
-                                val topCategory = it[0].categories.maxByOrNull { it.score }
-                                val prediction = topCategory?.label
-                                binding.tvPredict.text = prediction
-                            }
-                        }
+            lifecycleScope.launch {
+                viewModel.predictImage(image).observe(viewLifecycleOwner) { result ->
+                    showLoading(false)
+                    result.onSuccess { response ->
+                        val prediction = response.dicari
+                        binding.tvPredict.text = prediction
+                    }.onFailure { error ->
+                        showToast("Prediction failed: ${error.message}")
                     }
                 }
-            )
-            imageClassifierHelper.classifyStaticImage(Uri.fromFile(imageFile))
-        } ?: run {
-            showToast(getString(R.string.empty_image_warning))
-        }
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
     }
 
     private fun showImage() {

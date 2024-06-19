@@ -22,6 +22,8 @@ class ViewModelFactory private constructor(
             return ProfileViewModel(userRepository) as T
         } else if (modelClass.isAssignableFrom(AddViewModel::class.java)){
             return AddViewModel(userRepository) as T
+        } else if (modelClass.isAssignableFrom(RecommendViewModel::class.java)){
+            return RecommendViewModel(userRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
 

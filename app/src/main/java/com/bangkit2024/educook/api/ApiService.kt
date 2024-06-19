@@ -5,7 +5,9 @@ import com.bangkit2024.educook.api.model.RegisterRequest
 import com.bangkit2024.educook.data.response.ImageResponse
 import com.bangkit2024.educook.data.response.LoginResponse
 import com.bangkit2024.educook.data.response.MenuResponse
+import com.bangkit2024.educook.data.response.PredictResponse
 import com.bangkit2024.educook.data.response.RecipeResponse
+import com.bangkit2024.educook.data.response.RecommendResponse
 import com.bangkit2024.educook.data.response.RegisterResponse
 import com.bangkit2024.educook.data.response.UploadResponse
 import okhttp3.MultipartBody
@@ -51,4 +53,15 @@ interface ApiService {
         @Part("ingredients") ingredients: RequestBody,
         @Part("directions") directions: RequestBody
     ): UploadResponse
+
+    @Multipart
+    @POST("http://35.240.209.253:8090")
+    suspend fun predictImage(
+        @Part file: MultipartBody.Part
+    ): PredictResponse
+
+    @GET("recipe/ingredients")
+    fun getRecipesByIngredients(
+        @Query("query") query: String
+    ): RecommendResponse
 }
