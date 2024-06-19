@@ -21,6 +21,7 @@ import com.bangkit2024.educook.data.response.RecipeResponse
 import com.bangkit2024.educook.databinding.ActivityHomeBinding
 import com.bangkit2024.educook.ui.AddRecipeActivity
 import com.bangkit2024.educook.ui.DetailRecipeActivity
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,11 +32,8 @@ class HomeActivity : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: RecipeAdapter
 
-    private var currentPage = 0
-    private var isLoading = false
-    private var hasNextPage = true
-
     private lateinit var binding: ActivityHomeBinding
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,85 +73,47 @@ class HomeActivity : Fragment() {
         recipeRecyclerView.addItemDecoration(
             DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
-
-        recipeRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-
-                if (!isLoading && hasNextPage) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                        && firstVisibleItemPosition >= 0
-                        && totalItemCount >= 20
-                    ) { // assuming 20 is the page size
-                        fetchRecipes()
-                    }
-                }
-            }
-        })
     }
 
-    private fun fetchImage(imageId: String, callback: (String?) -> Unit) {
-        Log.d("HomeActivity", "Fetching image for imageId: $imageId") // Log imageId
-        RetrofitClient.api.getImages(imageId).enqueue(object : Callback<ImageResponse> {
-            override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
+    private suspend fun fetchImage(imageId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = RetrofitClient.api.getImages(imageId).execute()
                 if (response.isSuccessful) {
-                    val imageUrl = response.body()?.data?.url
-                    Log.d("HomeActivity", "Image URL fetched: $imageUrl") // Log for checking image URL
-                    callback(imageUrl)
+                    response.body()?.data?.url
                 } else {
                     Log.e("HomeActivity", "Failed to fetch image URL: ${response.code()}")
-                    callback(null)
+                    null
                 }
+            } catch (e: Exception) {
+                Log.e("HomeActivity", "Error fetching image URL: ${e.message}")
+                null
             }
-
-            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
-                Log.e("HomeActivity", "Error fetching image URL: ${t.message}")
-                callback(null)
-            }
-        })
+        }
     }
 
-
     private fun fetchRecipes() {
-        if (!isAdded) return
+        coroutineScope.launch {
+            progressBar.visibility = View.VISIBLE
 
-        isLoading = true
-        progressBar.visibility = View.VISIBLE
-
-        Log.d("HomeActivity", "Fetching recipes. Current page: $currentPage")
-
-        RetrofitClient.api.getRecipes(currentPage).enqueue(object : Callback<RecipeResponse> {
-            override fun onResponse(
-                call: Call<RecipeResponse>,
-                response: Response<RecipeResponse>
-            ) {
-                if (!isAdded) return  // Ensure the fragment is still added
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.api.getRecipes(0).execute()
+                }
 
                 if (response.isSuccessful) {
                     val recipeResponse = response.body()
                     if (recipeResponse != null) {
                         Log.d("HomeActivity", "Recipes fetched successfully.")
 
-                        val recipes = recipeResponse.data
-                        val updatedRecipes = mutableListOf<Recipe>()
-
-                        for (recipe in recipes) {
-                            fetchImage(recipe.imageId) { imageUrl ->
-                                recipe.imageUrl = imageUrl
-                                updatedRecipes.add(recipe)
-                                if (updatedRecipes.size == recipes.size) {
-                                    adapter.addRecipes(updatedRecipes)
-                                    hasNextPage = recipeResponse.pagination.hasNextPage
-                                    currentPage++
-                                    isLoading = false
-                                    progressBar.visibility = View.GONE
-                                }
-                            }
+                        val recipes = recipeResponse.data.take(5) // Ambil 5 data terbaru
+                        val updatedRecipes = recipes.map { recipe ->
+                            val imageUrl = fetchImage(recipe.imageId)
+                            recipe.imageUrl = imageUrl
+                            recipe
                         }
+
+                        adapter.addRecipes(updatedRecipes)
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -163,20 +123,18 @@ class HomeActivity : Fragment() {
                         "Gagal memuat resep, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
-                    isLoading = false
-                    progressBar.visibility = View.GONE
                 }
-            }
-
-            override fun onFailure(call: Call<RecipeResponse>, t: Throwable) {
-                if (!isAdded) return  // Ensure the fragment is still added
-
-                Log.e("HomeActivity", "Failure: ${t.message}")
+            } catch (e: Exception) {
+                Log.e("HomeActivity", "Failure: ${e.message}")
                 Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
-
-                isLoading = false
+            } finally {
                 progressBar.visibility = View.GONE
             }
-        })
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        coroutineScope.cancel()
     }
 }
