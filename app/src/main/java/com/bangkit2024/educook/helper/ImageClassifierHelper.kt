@@ -20,8 +20,8 @@ import org.tensorflow.lite.task.vision.classifier.Classifications
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
 class ImageClassifierHelper(
-    private var threshold: Float = 0.1f,
-    private var maxResults: Int = 3,
+    private var threshold: Float = 0.5f,
+    private var maxResults: Int = 5,
     private val modelName: String = "model.tflite",
     val context: Context,
     private val classifierListener: ClassifierListener?
