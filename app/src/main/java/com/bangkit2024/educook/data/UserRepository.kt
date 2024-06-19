@@ -16,7 +16,10 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.HttpException
+import retrofit2.Response
 
 class UserRepository(
     private val apiService: ApiService,
@@ -75,16 +78,21 @@ class UserRepository(
         }
     }
 
-    fun getRecipesByPrediction(prediction: String): LiveData<Result<RecommendResponse>> = liveData {
-        try {
-            val response = apiService.getRecipesByIngredients(prediction)
-            emit(Result.success(response))
-        } catch (e: HttpException) {
-            val jsonInString = e.response()?.errorBody()?.string()
-            val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
-            val errorMessage = errorBody?.error
-            emit(Result.failure(Throwable(errorMessage)))
-        }
+    fun getRecipesByPrediction(prediction: String, callback: (Result<RecommendResponse?>) -> Unit) {
+        apiService.getRecipesByIngredients(prediction).enqueue(object : Callback<RecommendResponse> {
+            override fun onResponse(call: Call<RecommendResponse>, response: Response<RecommendResponse>) {
+                if (response.isSuccessful) {
+                    callback(Result.success(response.body()))
+                } else {
+                    val errorMessage = "Failed to fetch recipes: ${response.code()}"
+                    callback(Result.failure(Throwable(errorMessage)))
+                }
+            }
+
+            override fun onFailure(call: Call<RecommendResponse>, t: Throwable) {
+                callback(Result.failure(t))
+            }
+        })
     }
 
     suspend fun saveToken(token: String) {

@@ -1,5 +1,6 @@
 package com.bangkit2024.educook.ui.nav_activity
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.databinding.ActivityCameraBinding
+import com.bangkit2024.educook.ui.RecommendationActivity
 import com.bangkit2024.educook.util.getImageUri
 import com.bangkit2024.educook.util.reduceFileImage
 import com.bangkit2024.educook.util.uriToFile
@@ -93,13 +95,19 @@ class CameraActivity : Fragment() {
                     showLoading(false)
                     result.onSuccess { response ->
                         val prediction = response.dicari
-                        binding.tvPredict.text = prediction
+                        navigateToRecommendation(prediction)
                     }.onFailure { error ->
                         showToast("Prediction failed: ${error.message}")
                     }
                 }
             }
         } ?: showToast(getString(R.string.empty_image_warning))
+    }
+
+    private fun navigateToRecommendation(prediction: String) {
+        val intent = Intent(requireContext(), RecommendationActivity::class.java)
+        intent.putExtra(EXTRA_PREDICT, prediction)
+        startActivity(intent)
     }
 
     private fun showImage() {
@@ -115,5 +123,9 @@ class CameraActivity : Fragment() {
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        const val EXTRA_PREDICT = "EXTRA_PREDICTION"
     }
 }

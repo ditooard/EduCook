@@ -9,6 +9,11 @@ data class RecipeResponse(
     @SerializedName("pagination") val pagination: Pagination
 )
 
+data class RecommendResponse(
+    val resep: List<Recipe>,
+    val prediksi: String
+)
+
 data class Recipe(
     @SerializedName("id") val id: String,
     @SerializedName("title") val title: String,

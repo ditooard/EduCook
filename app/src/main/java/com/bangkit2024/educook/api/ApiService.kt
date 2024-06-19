@@ -63,5 +63,5 @@ interface ApiService {
     @GET("recipe/ingredients")
     fun getRecipesByIngredients(
         @Query("query") query: String
-    ): RecommendResponse
+    ): Call<RecommendResponse>
 }
