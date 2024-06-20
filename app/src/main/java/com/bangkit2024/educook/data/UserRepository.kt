@@ -120,10 +120,6 @@ class UserRepository(
             emit(Result.failure(e))
         }
     }
-
-
-
-
     suspend fun saveToken(token: String) {
         userPreference.saveToken(token)
     }
@@ -131,7 +127,6 @@ class UserRepository(
     fun getToken(): Flow<String> {
         return userPreference.getToken()
     }
-
 
     suspend fun logout() {
         userPreference.logout()

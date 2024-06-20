@@ -1,6 +1,5 @@
 package com.bangkit2024.educook.ui.nav_activity
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -43,7 +42,7 @@ class ProfileActivity : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = ActivityProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -81,9 +80,7 @@ class ProfileActivity : Fragment() {
                 Log.d("ProfileActivity", "Observer called with result: $result")
                 binding.progressBar3.visibility = View.GONE
                 result.onSuccess { recipes ->
-                    recipes?.let { nonNullRecipes ->
-                        fetchAndDisplayRecipes(nonNullRecipes)
-                    }
+                    fetchAndDisplayRecipes(recipes)
                 }.onFailure { error ->
                     Toast.makeText(
                         requireContext(),
@@ -100,7 +97,7 @@ class ProfileActivity : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Logout")
         builder.setMessage("Are you sure you want to logout?")
-        builder.setPositiveButton("Yes") { dialog, _ ->
+        builder.setPositiveButton("Yes") { _, _ ->
             profileViewModel.logout()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

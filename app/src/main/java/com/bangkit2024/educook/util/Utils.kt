@@ -12,7 +12,6 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.bangkit2024.educook.BuildConfig
-import com.bangkit2024.educook.ui.nav_activity.CameraActivity
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream

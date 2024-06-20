@@ -12,7 +12,7 @@
         android:id="@+id/iv_logo"
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/logo"
@@ -139,22 +139,12 @@
             android:textSize="14sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tv_forgot_pass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:text="@string/forgot_pass"
-        android:textColor="?attr/colorOnSecondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditTextLayout"/>
-
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/button_background"
         android:text="@string/sign_in"
@@ -162,7 +152,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_forgot_pass" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditTextLayout" />
 
     <TextView
         android:id="@+id/tv_have_acc"
@@ -193,76 +183,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_have_acc"
         app:layout_constraintTop_toBottomOf="@id/loginButton" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/or_line"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_sign_in">
-
-        <View
-            android:id="@+id/lineStart"
-            android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:background="?attr/colorOnSecondary"
-            app:layout_constraintEnd_toStartOf="@+id/tv_or"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:id="@+id/tv_or"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="5dp"
-            android:text="@string/or"
-            android:textColor="?attr/colorOnSecondary"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/lineEnd"
-            app:layout_constraintStart_toEndOf="@+id/lineStart"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <View
-            android:id="@+id/lineEnd"
-            android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:background="?attr/colorOnSecondary"
-            app:layout_constraintStart_toEndOf="@+id/tv_or"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="8dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/googleButton"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/outline_background"
-        android:drawableStart="@drawable/ic_google"
-        android:drawablePadding="10dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="50dp"
-        android:gravity="center"
-        android:text="@string/signin_google"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="?attr/colorOnSecondary"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/or_line"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -44,7 +44,7 @@ class SearchActivity : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = ActivitySearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -207,7 +207,7 @@ class SearchActivity : Fragment() {
                     Log.e("SearchActivity", "Error: ${response.code()}, $errorBody")
                     Toast.makeText(
                         requireContext(),
-                        "Gagal memuat resep, Error ${response.code()}",
+                        "Failed to load recipe, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -220,7 +220,7 @@ class SearchActivity : Fragment() {
                 progressBar.visibility = View.GONE
 
                 Log.e("SearchActivity", "Failure: ${t.message}")
-                Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load recipe", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -253,7 +253,7 @@ class SearchActivity : Fragment() {
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Gagal mencari resep", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Failed to find a recipe", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -262,7 +262,7 @@ class SearchActivity : Fragment() {
 
                 isLoading = false
                 progressBar.visibility = View.GONE
-                Toast.makeText(requireContext(), "Gagal mencari resep", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to find a recipe", Toast.LENGTH_SHORT).show()
             }
         })
     }

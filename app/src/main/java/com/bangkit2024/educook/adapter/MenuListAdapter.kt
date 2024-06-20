@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bangkit2024.educook.R
 import com.bangkit2024.educook.databinding.ItemRowRecipeBinding
 import com.bangkit2024.educook.data.response.DetailMenu
 import java.text.ParseException

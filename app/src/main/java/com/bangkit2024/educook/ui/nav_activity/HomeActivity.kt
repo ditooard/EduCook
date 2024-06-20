@@ -37,7 +37,7 @@ class HomeActivity : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = ActivityHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -60,7 +60,7 @@ class HomeActivity : Fragment() {
                 putExtra(
                     DetailRecipeActivity.MENU,
                     recipe
-                )  // Use the constant key from DetailRecipeActivity
+                )
             }
             startActivity(intent)
         }
@@ -108,7 +108,7 @@ class HomeActivity : Fragment() {
                     if (recipeResponse != null) {
                         Log.d("HomeActivity", "Recipes fetched successfully.")
 
-                        val recipes = recipeResponse.data.take(5) // Ambil 5 data terbaru
+                        val recipes = recipeResponse.data.take(5)
                         val updatedRecipes = recipes.map { recipe ->
                             val imageUrl = fetchImage(recipe.imageId)
                             recipe.imageUrl = imageUrl
@@ -117,7 +117,6 @@ class HomeActivity : Fragment() {
 
                         adapter.addRecipes(updatedRecipes)
 
-                        // Toggle visibility of noDataFound based on adapter's item count
                         binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
                     }
                 } else {
@@ -125,13 +124,13 @@ class HomeActivity : Fragment() {
                     Log.e("HomeActivity", "Error: ${response.code()}, $errorBody")
                     Toast.makeText(
                         requireContext(),
-                        "Gagal memuat resep, Error ${response.code()}",
+                        "Failed to load recipe, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } catch (e: Exception) {
                 Log.e("HomeActivity", "Failure: ${e.message}")
-                Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load recipe", Toast.LENGTH_SHORT).show()
             } finally {
                 progressBar.visibility = View.GONE
             }

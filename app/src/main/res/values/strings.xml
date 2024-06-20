@@ -10,13 +10,10 @@
     <string name="password">Password</string>
     <string name="logo">Logo</string>
     <string name="have_account">Have an account?</string>
-    <string name="or">Or</string>
-    <string name="signin_google">Sign In with Google</string>
     <string name="title_signin">Welcome Back</string>
     <string name="desc_signin_page">Sign in to your account</string>
     <string name="to">to</string>
     <string name="edu_cook">EduCook</string>
-    <string name="forgot_pass">Forgot password?</string>
     <string name="dont_have_acc">Don’t have an account?</string>
     <string name="password_char">Password less than 6 characters</string>
     <string name="arrow_back">Arrow Back</string>

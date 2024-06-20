@@ -1,9 +1,7 @@
 package com.bangkit2024.educook.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.bangkit2024.educook.data.UserRepository
 import com.bangkit2024.educook.data.response.RecipeUserResponse
