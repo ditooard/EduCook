@@ -14,6 +14,10 @@ data class RecommendResponse(
     val prediksi: String
 )
 
+data class RecipeUserResponse(
+    val dicari: String,
+    val resep: List<Recipe>
+)
 data class Recipe(
     @SerializedName("id") val id: String,
     @SerializedName("title") val title: String,
@@ -23,7 +27,7 @@ data class Recipe(
     @SerializedName("updatedAt") val updatedAt: Date,
     @SerializedName("imageId") val imageId: String,
     @SerializedName("idUser") val idUser: String,
-    var imageUrl: String? = null // Tambahkan properti ini
+    var imageUrl: String? = null
 ) : Serializable
 
 data class Pagination(

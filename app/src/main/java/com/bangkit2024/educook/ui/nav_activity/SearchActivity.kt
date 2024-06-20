@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -30,6 +31,9 @@ class SearchActivity : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: RecipeAdapter
     private lateinit var searchView: SearchView
+    private lateinit var firstPageButton: Button
+    private lateinit var prevPageButton: Button
+    private lateinit var nextPageButton: Button
 
     private var currentPage = 0
     private var isLoading = false
@@ -51,6 +55,9 @@ class SearchActivity : Fragment() {
         recipeRecyclerView = binding.rvUsers
         progressBar = binding.progressBar3
         searchView = binding.searchView
+        firstPageButton = binding.firstPageButton
+        prevPageButton = binding.prevPageButton
+        nextPageButton = binding.nextPageButton
 
         setupRecyclerView()
 
@@ -76,6 +83,28 @@ class SearchActivity : Fragment() {
                 return false
             }
         })
+
+        // Set up button functionality
+        firstPageButton.setOnClickListener {
+            if (currentPage != 0) {
+                currentPage = 0
+                fetchRecipes(reset = true)
+            }
+        }
+
+        prevPageButton.setOnClickListener {
+            if (currentPage > 0) {
+                currentPage--
+                fetchRecipes(reset = true)
+            }
+        }
+
+        nextPageButton.setOnClickListener {
+            if (hasNextPage) {
+                currentPage++
+                fetchRecipes(reset = true)
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -122,11 +151,15 @@ class SearchActivity : Fragment() {
         })
     }
 
-    private fun fetchRecipes() {
+    private fun fetchRecipes(reset: Boolean = false) {
         if (!isAdded) return // Ensure the fragment is still added
 
         isLoading = true
         progressBar.visibility = View.VISIBLE
+
+        if (reset) {
+            adapter.clearRecipes()
+        }
 
         Log.d("SearchActivity", "Fetching recipes. Current page: $currentPage")
 
@@ -137,27 +170,36 @@ class SearchActivity : Fragment() {
             ) {
                 if (!isAdded) return  // Ensure the fragment is still added
 
+                isLoading = false
+                progressBar.visibility = View.GONE
+
                 if (response.isSuccessful) {
                     val recipeResponse = response.body()
                     if (recipeResponse != null) {
                         Log.d("SearchActivity", "Recipes fetched successfully.")
 
                         val recipes = recipeResponse.data
-                        val updatedRecipes = mutableListOf<Recipe>()
+                        if (recipes.isEmpty()) {
+                            // No data case
+                            binding.noDataFound.visibility = View.VISIBLE
+                        } else {
+                            val updatedRecipes = mutableListOf<Recipe>()
 
-                        for (recipe in recipes) {
-                            fetchImage(recipe.imageId) { imageUrl ->
-                                recipe.imageUrl = imageUrl
-                                updatedRecipes.add(recipe)
-                                if (updatedRecipes.size == recipes.size) {
-                                    adapter.addRecipes(updatedRecipes)
-                                    hasNextPage = recipeResponse.pagination.hasNextPage
-                                    currentPage++
-                                    isLoading = false
-                                    progressBar.visibility = View.GONE
+                            for (recipe in recipes) {
+                                fetchImage(recipe.imageId) { imageUrl ->
+                                    recipe.imageUrl = imageUrl
+                                    updatedRecipes.add(recipe)
+                                    if (updatedRecipes.size == recipes.size) {
+                                        adapter.addRecipes(updatedRecipes)
+                                        binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                                        hasNextPage = recipeResponse.pagination.hasNextPage
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        Log.e("SearchActivity", "Empty response body")
+                        binding.noDataFound.visibility = View.VISIBLE
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -167,19 +209,17 @@ class SearchActivity : Fragment() {
                         "Gagal memuat resep, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
-                    isLoading = false
-                    progressBar.visibility = View.GONE
                 }
             }
 
             override fun onFailure(call: Call<RecipeResponse>, t: Throwable) {
                 if (!isAdded) return  // Ensure the fragment is still added
 
-                Log.e("SearchActivity", "Failure: ${t.message}")
-                Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
-
                 isLoading = false
                 progressBar.visibility = View.GONE
+
+                Log.e("SearchActivity", "Failure: ${t.message}")
+                Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
             }
         })
     }

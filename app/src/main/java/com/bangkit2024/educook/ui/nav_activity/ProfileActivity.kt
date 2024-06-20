@@ -1,57 +1,106 @@
 package com.bangkit2024.educook.ui.nav_activity
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bangkit2024.educook.adapter.MenuListAdapter
-import com.bangkit2024.educook.data.local.UserPreference
-import com.bangkit2024.educook.data.local.dataStore
-import com.bangkit2024.educook.data.response.DetailMenu
+import androidx.recyclerview.widget.RecyclerView
+import com.bangkit2024.educook.adapter.RecipeAdapter
+import com.bangkit2024.educook.api.RetrofitClient
+import com.bangkit2024.educook.data.response.RecipeUserResponse
 import com.bangkit2024.educook.databinding.ActivityProfileBinding
 import com.bangkit2024.educook.ui.DetailRecipeActivity
 import com.bangkit2024.educook.ui.LoginActivity
-import com.bangkit2024.educook.viewmodel.HomeViewModel
 import com.bangkit2024.educook.viewmodel.ProfileViewModel
 import com.bangkit2024.educook.viewmodel.ViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileActivity : Fragment() {
 
-    private lateinit var binding: ActivityProfileBinding
-    private lateinit var userToken: String
+    private lateinit var recipeRecyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var adapter: RecipeAdapter
+    private var _binding: ActivityProfileBinding? = null
+    private val binding get() = _binding!!
 
-    private val homeViewModel: HomeViewModel by lazy {
-        ViewModelProvider(this)[HomeViewModel::class.java]
-    }
-
-    private val profileViewModel by viewModels<ProfileViewModel>{
+    private val profileViewModel by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(requireContext())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = ActivityProfileBinding.inflate(inflater, container, false)
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = ActivityProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        initializeUserPreferences()
-        setupObservers()
+        recipeRecyclerView = binding.rvUsers
+        progressBar = binding.progressBar3
+
+        // Set LayoutManager for RecyclerView
+        recipeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        adapter = RecipeAdapter(requireContext(), mutableListOf())
+        recipeRecyclerView.adapter = adapter
+
+        adapter.setOnItemClickListener { recipe ->
+            val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
+                putExtra(DetailRecipeActivity.MENU, recipe)
+            }
+            startActivity(intent)
+        }
 
         binding.ivLogout.setOnClickListener {
+            showLogoutConfirmationDialog()
+        }
+
+        binding.progressBar3.visibility = View.VISIBLE
+        Log.d("ProfileActivity", "Progress bar set to VISIBLE")
+
+        lifecycleScope.launch {
+            val token = profileViewModel.getToken().first()
+            Log.d("ProfileActivity", "Token retrieved: $token")
+            profileViewModel.getRecipesByUser(token).observe(viewLifecycleOwner) { result ->
+                Log.d("ProfileActivity", "Observer called with result: $result")
+                binding.progressBar3.visibility = View.GONE
+                result.onSuccess { recipes ->
+                    recipes?.let { nonNullRecipes ->
+                        fetchAndDisplayRecipes(nonNullRecipes)
+                    }
+                }.onFailure { error ->
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to fetch recipes: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Logout")
+        builder.setMessage("Are you sure you want to logout?")
+        builder.setPositiveButton("Yes") { dialog, _ ->
             profileViewModel.logout()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -59,69 +108,52 @@ class ProfileActivity : Fragment() {
             startActivity(intent)
             requireActivity().finish()
         }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 
-    private fun setupRecyclerView() {
-        val layoutManager = LinearLayoutManager(requireContext())
-        binding.rvUsers.layoutManager = layoutManager
-        binding.rvUsers.addItemDecoration(
-            DividerItemDecoration(requireContext(), layoutManager.orientation)
-        )
+    private suspend fun fetchImage(imageId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = RetrofitClient.api.getImages(imageId).execute()
+                if (response.isSuccessful) {
+                    response.body()?.data?.url
+                } else {
+                    Log.e("ProfileActivity", "Failed to fetch image URL: ${response.code()}")
+                    null
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileActivity", "Error fetching image URL", e)
+                null
+            }
+        }
     }
 
-    private fun initializeUserPreferences() {
-        val preferences = UserPreference.getInstance(requireContext().dataStore)
-
+    private fun fetchAndDisplayRecipes(recipes: RecipeUserResponse) {
         lifecycleScope.launch {
-            preferences.getToken().collect { token ->
-                userToken = token
-                homeViewModel.fetchStories(userToken)
+            val updatedRecipes = recipes.resep.map { recipe ->
+                recipe.apply {
+                    imageUrl = fetchImage(recipe.imageId)
+                }
             }
-
+            Log.d("ProfileActivity", "Updated recipes: $updatedRecipes")
+            adapter.addRecipes(updatedRecipes)
+            binding.progressBar3.visibility = View.GONE
+            Log.d("ProfileActivity", "Recipes displayed and progress bar set to GONE")
+            updateNoDataFoundView(updatedRecipes.isEmpty())
         }
     }
 
-    private fun setupObservers() {
-        homeViewModel.message.observe(viewLifecycleOwner) { message ->
-            displayStories(homeViewModel.stories.value ?: emptyList())
-        }
-
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            toggleLoadingIndicator(isLoading)
-        }
-    }
-
-    private fun displayStories(stories: List<DetailMenu>) {
-        toggleNoDataMessage(stories.isEmpty())
-
-        val adapter = MenuListAdapter(stories)
-        binding.rvUsers.adapter = adapter
-
-        adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
-            override fun onStoryClicked(story: DetailMenu) {
-                adapter.setOnStoryClickCallback(object : MenuListAdapter.OnStoryClickCallback {
-                    override fun onStoryClicked(story: DetailMenu) {
-                        navigateToDetailRecipeActivity(story)
-                    }
-                })
-            }
-        })
-    }
-
-    private fun navigateToDetailRecipeActivity(story: DetailMenu) {
-        val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-            putExtra(DetailRecipeActivity.MENU, story)
-        }
-        startActivity(intent)
-    }
-
-    private fun toggleNoDataMessage(isEmpty: Boolean) {
+    private fun updateNoDataFoundView(isEmpty: Boolean) {
         binding.noDataFound.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        binding.rvUsers.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }
 
-    private fun toggleLoadingIndicator(isVisible: Boolean) {
-        binding.progressBar3.visibility = if (isVisible) View.VISIBLE else View.GONE
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
-    companion object
 }

@@ -40,12 +40,15 @@ class BookmarkActivity : Fragment() {
         viewModel.getBookmarkList()?.observe(viewLifecycleOwner, { favoriteUsers ->
             if (favoriteUsers.isNullOrEmpty()) {
                 binding.rvUsers.visibility = View.GONE
+                binding.noDataFound.visibility = View.VISIBLE
             } else {
                 val bookmarkList = mapList(favoriteUsers)
                 adapter.addRecipes(bookmarkList)
                 binding.rvUsers.visibility = View.VISIBLE
+                binding.noDataFound.visibility = View.GONE
             }
         })
+
 
         adapter.setOnItemClickListener { recipe ->
             navigateToDetailRecipeActivity(recipe)

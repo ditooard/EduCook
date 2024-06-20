@@ -5,6 +5,8 @@
     <string name="desc_signup_page">Create your account</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
+    <string name="bangkit">Bangkit Team</string>
+    <string name="capstone">Capstone Project</string>
     <string name="password">Password</string>
     <string name="logo">Logo</string>
     <string name="have_account">Have an account?</string>

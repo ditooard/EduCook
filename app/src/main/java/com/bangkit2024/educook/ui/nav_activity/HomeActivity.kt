@@ -15,16 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bangkit2024.educook.R
 import com.bangkit2024.educook.adapter.RecipeAdapter
 import com.bangkit2024.educook.api.RetrofitClient
-import com.bangkit2024.educook.data.response.ImageResponse
-import com.bangkit2024.educook.data.response.Recipe
-import com.bangkit2024.educook.data.response.RecipeResponse
 import com.bangkit2024.educook.databinding.ActivityHomeBinding
 import com.bangkit2024.educook.ui.AddRecipeActivity
 import com.bangkit2024.educook.ui.DetailRecipeActivity
-import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeActivity : Fragment() {
 
@@ -58,7 +57,10 @@ class HomeActivity : Fragment() {
 
         adapter.setOnItemClickListener { recipe ->
             val intent = Intent(requireContext(), DetailRecipeActivity::class.java).apply {
-                putExtra(DetailRecipeActivity.MENU, recipe)  // Use the constant key from DetailRecipeActivity
+                putExtra(
+                    DetailRecipeActivity.MENU,
+                    recipe
+                )  // Use the constant key from DetailRecipeActivity
             }
             startActivity(intent)
         }
@@ -114,6 +116,9 @@ class HomeActivity : Fragment() {
                         }
 
                         adapter.addRecipes(updatedRecipes)
+
+                        // Toggle visibility of noDataFound based on adapter's item count
+                        binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
@@ -132,6 +137,7 @@ class HomeActivity : Fragment() {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

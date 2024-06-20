@@ -9,11 +9,14 @@ import com.bangkit2024.educook.api.model.LoginRequest
 import com.bangkit2024.educook.api.model.RegisterRequest
 import com.bangkit2024.educook.data.response.ErrorResponse
 import com.bangkit2024.educook.data.response.PredictResponse
+import com.bangkit2024.educook.data.response.RecipeUserResponse
 import com.bangkit2024.educook.data.response.RecommendResponse
 import com.bangkit2024.educook.data.response.RegisterResponse
 import com.bangkit2024.educook.data.response.UploadResponse
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -95,6 +98,32 @@ class UserRepository(
         })
     }
 
+    suspend fun getRecipesByUser(token: String): LiveData<Result<RecipeUserResponse>> = liveData {
+        try {
+            withContext(Dispatchers.IO) {
+                val response = apiService.getUserRecipes("Bearer $token").execute()
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        emit(Result.success(body))
+                    } else {
+                        emit(Result.failure(Throwable("Empty response body")))
+                    }
+                } else {
+                    val jsonInString = response.errorBody()?.string()
+                    val errorBody = Gson().fromJson(jsonInString, ErrorResponse::class.java)
+                    val errorMessage = errorBody?.error ?: "Unknown error"
+                    emit(Result.failure(Throwable(errorMessage)))
+                }
+            }
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
+
+
+
+
     suspend fun saveToken(token: String) {
         userPreference.saveToken(token)
     }
@@ -102,6 +131,7 @@ class UserRepository(
     fun getToken(): Flow<String> {
         return userPreference.getToken()
     }
+
 
     suspend fun logout() {
         userPreference.logout()
@@ -119,3 +149,7 @@ class UserRepository(
             }.also { instance = it }
     }
 }
+
+
+
+

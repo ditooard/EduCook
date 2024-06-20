@@ -1,6 +1,7 @@
 package com.bangkit2024.educook.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,10 +49,20 @@ class RecipeAdapter(
         return filteredRecipes.size
     }
 
-    fun addRecipes(newRecipes: List<Recipe>) {
+    fun addRecipes(newRecipes: List<Recipe>?) {
+        if (newRecipes != null) {
+            recipes.clear()
+            recipes.addAll(newRecipes)
+            filteredRecipes = recipes.toMutableList()
+            notifyDataSetChanged()
+        } else {
+            Log.e("RecipeAdapter", "New recipes list is null.")
+        }
+    }
+
+    fun clearRecipes() {
         recipes.clear()
-        recipes.addAll(newRecipes)
-        filteredRecipes = recipes.toMutableList()
+        filteredRecipes.clear()
         notifyDataSetChanged()
     }
 

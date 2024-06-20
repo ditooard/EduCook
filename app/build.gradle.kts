@@ -18,7 +18,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"http://api.aexon.cloud:5000/api/v1/\"")
+        buildConfigField("String", "BASE_URL", "\"http://api.aexon.cloud/api/v1/\"")
     }
 
     buildTypes {
