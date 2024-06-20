@@ -36,7 +36,7 @@ class RecipeAdapter(
         val recipe = filteredRecipes[position]
         Glide.with(context)
             .load(recipe.imageUrl)
-            .placeholder(R.drawable.blank_photo) // Set placeholder image
+            .placeholder(R.drawable.blank_photo)
             .into(holder.image)
         holder.titleTextView.text = recipe.title
 

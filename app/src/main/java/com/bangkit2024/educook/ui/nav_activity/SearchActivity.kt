@@ -74,12 +74,13 @@ class SearchActivity : Fragment() {
         // Set up search functionality
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                adapter.filter.filter(query)
+                query?.let {
+                    searchRecipes(it)
+                }
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
                 return false
             }
         })
@@ -220,6 +221,48 @@ class SearchActivity : Fragment() {
 
                 Log.e("SearchActivity", "Failure: ${t.message}")
                 Toast.makeText(requireContext(), "Gagal memuat resep", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun searchRecipes(query: String) {
+        isLoading = true
+        progressBar.visibility = View.VISIBLE
+        currentPage = 0
+
+        RetrofitClient.api.searchRecipes(query).enqueue(object : Callback<List<Recipe>> {
+            override fun onResponse(call: Call<List<Recipe>>, response: Response<List<Recipe>>) {
+                if (!isAdded) return
+
+                isLoading = false
+                progressBar.visibility = View.GONE
+
+                if (response.isSuccessful) {
+                    val recipes = response.body() ?: emptyList()
+                    val updatedRecipes = mutableListOf<Recipe>()
+
+                    for (recipe in recipes) {
+                        fetchImage(recipe.imageId) { imageUrl ->
+                            recipe.imageUrl = imageUrl
+                            updatedRecipes.add(recipe)
+                            if (updatedRecipes.size == recipes.size) {
+                                adapter.clearRecipes() // Clear previous search results
+                                adapter.addRecipes(updatedRecipes)
+                                binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                            }
+                        }
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Gagal mencari resep", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Recipe>>, t: Throwable) {
+                if (!isAdded) return
+
+                isLoading = false
+                progressBar.visibility = View.GONE
+                Toast.makeText(requireContext(), "Gagal mencari resep", Toast.LENGTH_SHORT).show()
             }
         })
     }

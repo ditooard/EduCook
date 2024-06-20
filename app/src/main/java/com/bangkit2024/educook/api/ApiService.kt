@@ -6,6 +6,7 @@ import com.bangkit2024.educook.data.response.ImageResponse
 import com.bangkit2024.educook.data.response.LoginResponse
 import com.bangkit2024.educook.data.response.MenuResponse
 import com.bangkit2024.educook.data.response.PredictResponse
+import com.bangkit2024.educook.data.response.Recipe
 import com.bangkit2024.educook.data.response.RecipeResponse
 import com.bangkit2024.educook.data.response.RecipeUserResponse
 import com.bangkit2024.educook.data.response.RecommendResponse
@@ -41,6 +42,9 @@ interface ApiService {
 
     @GET("recipe")
     fun getRecipes(@Query("page") page: Int): Call<RecipeResponse>
+
+    @GET("recipe/search")
+    fun searchRecipes(@Query("query") query: String): Call<List<Recipe>>
 
     @GET("recipe/getUser")
     fun getUserRecipes(@Header("Authorization") token: String): Call<RecipeUserResponse>
