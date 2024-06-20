@@ -35,9 +35,9 @@ class BookmarkActivity : Fragment() {
         binding.rvUsers.adapter = adapter
         binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModel = ViewModelProvider(this)[BookmarkViewModel::class.java]
+        viewModel = ViewModelProvider(this).get(BookmarkViewModel::class.java)
 
-        viewModel.getBookmarkList()?.observe(viewLifecycleOwner) { favoriteUsers ->
+        viewModel.getBookmarkList()?.observe(viewLifecycleOwner, { favoriteUsers ->
             if (favoriteUsers.isNullOrEmpty()) {
                 binding.rvUsers.visibility = View.GONE
                 binding.noDataFound.visibility = View.VISIBLE
@@ -47,7 +47,7 @@ class BookmarkActivity : Fragment() {
                 binding.rvUsers.visibility = View.VISIBLE
                 binding.noDataFound.visibility = View.GONE
             }
-        }
+        })
 
 
         adapter.setOnItemClickListener { recipe ->

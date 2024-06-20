@@ -80,7 +80,9 @@ class ProfileActivity : Fragment() {
                 Log.d("ProfileActivity", "Observer called with result: $result")
                 binding.progressBar3.visibility = View.GONE
                 result.onSuccess { recipes ->
-                    fetchAndDisplayRecipes(recipes)
+                    recipes?.let { nonNullRecipes ->
+                        fetchAndDisplayRecipes(nonNullRecipes)
+                    }
                 }.onFailure { error ->
                     Toast.makeText(
                         requireContext(),
