@@ -23,9 +23,10 @@ import kotlinx.coroutines.withContext
 class RecommendationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRecommendationBinding
     private lateinit var adapter: RecipeAdapter
-    private val viewModel by viewModels<RecommendViewModel>{
+    private val viewModel by viewModels<RecommendViewModel> {
         ViewModelFactory.getInstance(this)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecommendationBinding.inflate(layoutInflater)
@@ -48,16 +49,21 @@ class RecommendationActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
             if (prediction != null) {
-                viewModel.getRecipesByPrediction(prediction).observe(this@RecommendationActivity) { result ->
-                    binding.progressBar.visibility = View.GONE
-                    result.onSuccess { recipes ->
-                        recipes?.let { nonNullRecipes ->
-                            fetchAndDisplayRecipes(nonNullRecipes)
+                viewModel.getRecipesByPrediction(prediction)
+                    .observe(this@RecommendationActivity) { result ->
+                        binding.progressBar.visibility = View.GONE
+                        result.onSuccess { recipes ->
+                            recipes?.let { nonNullRecipes ->
+                                fetchAndDisplayRecipes(nonNullRecipes)
+                            }
+                        }.onFailure { error ->
+                            Toast.makeText(
+                                this@RecommendationActivity,
+                                "Failed to fetch recipes: ${error.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    }.onFailure { error ->
-                        Toast.makeText(this@RecommendationActivity, "Failed to fetch recipes: ${error.message}", Toast.LENGTH_SHORT).show()
                     }
-                }
             }
         }
     }

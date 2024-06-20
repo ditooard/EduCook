@@ -40,7 +40,11 @@ class RegisterActivity : AppCompatActivity() {
         setupAction()
     }
 
-    private fun setupTextInput(editText: TextInputEditText, textInputLayout: TextInputLayout, hintResId: Int) {
+    private fun setupTextInput(
+        editText: TextInputEditText,
+        textInputLayout: TextInputLayout,
+        hintResId: Int
+    ) {
         editText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 textInputLayout.hint = ""
@@ -55,7 +59,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun setValidatePassword(){
+    private fun setValidatePassword() {
         binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -89,7 +93,11 @@ class RegisterActivity : AppCompatActivity() {
                 viewModel.register(name, email, password).observe(this@RegisterActivity) { result ->
                     binding.progressBar.visibility = View.GONE
                     result.onSuccess {
-                        Toast.makeText(this@RegisterActivity, getString(R.string.register_success), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            getString(R.string.register_success),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                         startActivity(intent)
                         finish()

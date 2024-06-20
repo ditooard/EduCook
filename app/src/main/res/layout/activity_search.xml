@@ -4,25 +4,25 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.nav_activity.SearchActivity"
-    android:background="?attr/colorSecondary">
+    android:background="?attr/colorSecondary"
+    tools:context=".ui.nav_activity.SearchActivity">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
         android:layout_marginTop="40dp"
-        app:iconifiedByDefault="false"
-        app:queryHint="@string/search"
-        android:focusable="false"
-        app:searchIcon="@drawable/ic_search_view"
-        app:queryBackground="@android:color/transparent"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/search_background"
+        android:focusable="false"
+        app:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryBackground="@android:color/transparent"
+        app:queryHint="@string/search"
+        app:searchIcon="@drawable/ic_search_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_users"
@@ -43,10 +43,10 @@
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

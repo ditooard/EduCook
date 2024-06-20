@@ -23,15 +23,15 @@
             android:exported="false" />
         <activity
             android:name=".ui.LoginActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.DetailRecipeActivity"
             android:exported="false" />
         <activity
             android:name=".ui.AddRecipeActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.nav_activity.CameraActivity"
             android:exported="false" />
@@ -49,11 +49,11 @@
             android:exported="false" />
         <activity
             android:name=".ui.RegisterActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.SplashScreenActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,8 +62,7 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -31,14 +31,15 @@ class HomeActivity : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: RecipeAdapter
 
-    private lateinit var binding: ActivityHomeBinding
+    private var _binding: ActivityHomeBinding? = null
+    private val binding get() = _binding!!
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ActivityHomeBinding.inflate(inflater, container, false)
+        _binding = ActivityHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -115,31 +116,41 @@ class HomeActivity : Fragment() {
                             recipe
                         }
 
-                        adapter.addRecipes(updatedRecipes)
-
-                        binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                        // Check if the fragment is still added before updating the UI
+                        if (isAdded) {
+                            adapter.addRecipes(updatedRecipes)
+                            binding.noDataFound.visibility =
+                                if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                        }
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("HomeActivity", "Error: ${response.code()}, $errorBody")
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to load recipe, Error ${response.code()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (isAdded) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to load recipe, Error ${response.code()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("HomeActivity", "Failure: ${e.message}")
-                Toast.makeText(requireContext(), "Failed to load recipe", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Failed to load recipe", Toast.LENGTH_SHORT)
+                        .show()
+                }
             } finally {
-                progressBar.visibility = View.GONE
+                if (isAdded) {
+                    progressBar.visibility = View.GONE
+                }
             }
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         coroutineScope.cancel()
     }
 }

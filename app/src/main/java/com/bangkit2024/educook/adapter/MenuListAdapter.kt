@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bangkit2024.educook.databinding.ItemRowRecipeBinding
 import com.bangkit2024.educook.data.response.DetailMenu
+import com.bangkit2024.educook.databinding.ItemRowRecipeBinding
+import com.bumptech.glide.Glide
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -30,7 +30,6 @@ class MenuListAdapter(private var menu: List<DetailMenu>) :
         listBookmarks.addAll(menus)
         notifyDataSetChanged()
     }
-
 
 
     fun setOnStoryClickCallback(callback: OnStoryClickCallback) {

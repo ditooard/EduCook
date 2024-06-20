@@ -30,7 +30,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun checkLoginStatus() {
         lifecycleScope.launch {
-            viewModel.getToken().collect{token ->
+            viewModel.getToken().collect { token ->
                 if (token.isEmpty()) {
                     showSplashScreen()
                 } else {

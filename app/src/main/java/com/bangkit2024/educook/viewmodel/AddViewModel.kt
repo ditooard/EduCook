@@ -11,6 +11,12 @@ class AddViewModel(private val userRepository: UserRepository) : ViewModel() {
         return userRepository.getToken()
     }
 
-    suspend fun addRecipe(token: String, image: MultipartBody.Part, title: RequestBody, ingredients: RequestBody, directions: RequestBody) =
+    suspend fun addRecipe(
+        token: String,
+        image: MultipartBody.Part,
+        title: RequestBody,
+        ingredients: RequestBody,
+        directions: RequestBody
+    ) =
         userRepository.addRecipe(token, image, title, ingredients, directions)
 }

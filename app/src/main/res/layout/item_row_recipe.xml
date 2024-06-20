@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="itemStory"
             type="com.bangkit2024.educook.data.response.DetailMenu" />

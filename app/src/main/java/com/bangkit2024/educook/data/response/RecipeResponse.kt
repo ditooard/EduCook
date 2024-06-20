@@ -2,7 +2,7 @@ package com.bangkit2024.educook.data.response
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
-import java.util.*
+import java.util.Date
 
 data class RecipeResponse(
     @SerializedName("data") val data: List<Recipe>,
@@ -18,6 +18,7 @@ data class RecipeUserResponse(
     val dicari: String,
     val resep: List<Recipe>
 )
+
 data class Recipe(
     @SerializedName("id") val id: String,
     @SerializedName("title") val title: String,

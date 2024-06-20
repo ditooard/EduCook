@@ -63,7 +63,7 @@ interface ApiService {
     ): UploadResponse
 
     @Multipart
-    @POST("http://35.240.209.253:8090")
+    @POST("https://ml.aexon.cloud")
     suspend fun predictImage(
         @Part file: MultipartBody.Part
     ): PredictResponse

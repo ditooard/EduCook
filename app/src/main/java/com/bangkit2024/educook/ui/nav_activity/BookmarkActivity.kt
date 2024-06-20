@@ -16,7 +16,8 @@ import com.bangkit2024.educook.ui.DetailRecipeActivity
 import com.bangkit2024.educook.viewmodel.BookmarkViewModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class BookmarkActivity : Fragment() {
 
@@ -48,7 +49,6 @@ class BookmarkActivity : Fragment() {
                 binding.noDataFound.visibility = View.GONE
             }
         })
-
 
         adapter.setOnItemClickListener { recipe ->
             navigateToDetailRecipeActivity(recipe)

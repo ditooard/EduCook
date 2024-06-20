@@ -7,7 +7,7 @@ import com.bangkit2024.educook.data.UserRepository
 import com.bangkit2024.educook.data.response.RecommendResponse
 import okhttp3.MultipartBody
 
-class RecommendViewModel(private val userRepository: UserRepository): ViewModel() {
+class RecommendViewModel(private val userRepository: UserRepository) : ViewModel() {
     suspend fun predictImage(image: MultipartBody.Part) =
         userRepository.predictImage(image)
 

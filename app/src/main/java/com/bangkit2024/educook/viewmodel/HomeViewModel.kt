@@ -28,7 +28,10 @@ class HomeViewModel : ViewModel() {
         _isLoading.value = true
         ApiConfig.getApiService().fetchStories("Bearer $token")
             .enqueue(object : Callback<MenuResponse> {
-                override fun onResponse(call: Call<MenuResponse>, response: Response<MenuResponse>) {
+                override fun onResponse(
+                    call: Call<MenuResponse>,
+                    response: Response<MenuResponse>
+                ) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
                         response.body()?.let {

@@ -47,8 +47,8 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawerLayout)
 
         lifecycleScope.launch {
-            viewModel.getToken().collect {token ->
-                if (token.isEmpty()){
+            viewModel.getToken().collect { token ->
+                if (token.isEmpty()) {
                     val intent = Intent(this@MainActivity, LoginActivity::class.java)
                     startActivity(intent)
                     finish()

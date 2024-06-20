@@ -2,12 +2,12 @@ package com.bangkit2024.educook.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.bangkit2024.educook.data.local.UserPreference
-import com.bangkit2024.educook.data.response.LoginResponse
 import com.bangkit2024.educook.api.ApiService
 import com.bangkit2024.educook.api.model.LoginRequest
 import com.bangkit2024.educook.api.model.RegisterRequest
+import com.bangkit2024.educook.data.local.UserPreference
 import com.bangkit2024.educook.data.response.ErrorResponse
+import com.bangkit2024.educook.data.response.LoginResponse
 import com.bangkit2024.educook.data.response.PredictResponse
 import com.bangkit2024.educook.data.response.RecipeUserResponse
 import com.bangkit2024.educook.data.response.RecommendResponse
@@ -28,7 +28,11 @@ class UserRepository(
     private val apiService: ApiService,
     private val userPreference: UserPreference,
 ) {
-    suspend fun register(name: String, email: String, password: String): LiveData<Result<RegisterResponse>> = liveData {
+    suspend fun register(
+        name: String,
+        email: String,
+        password: String
+    ): LiveData<Result<RegisterResponse>> = liveData {
         try {
             val request = RegisterRequest(name, email, password)
             val response = apiService.register(request)
@@ -60,9 +64,10 @@ class UserRepository(
         title: RequestBody,
         ingredients: RequestBody,
         directions: RequestBody
-    ): LiveData<Result<UploadResponse>> = liveData{
+    ): LiveData<Result<UploadResponse>> = liveData {
         try {
-            val response = apiService.addRecipe("Bearer $token", image, title, ingredients, directions)
+            val response =
+                apiService.addRecipe("Bearer $token", image, title, ingredients, directions)
             emit(Result.success(response))
         } catch (e: HttpException) {
             val jsonInString = e.response()?.errorBody()?.string()
@@ -72,30 +77,35 @@ class UserRepository(
         }
     }
 
-    suspend fun predictImage(image: MultipartBody.Part): LiveData<Result<PredictResponse>> = liveData {
-        try {
-            val response = apiService.predictImage(image)
-            emit(Result.success(response))
-        } catch (e: HttpException) {
-            emit(Result.failure(Throwable(e.message)))
+    suspend fun predictImage(image: MultipartBody.Part): LiveData<Result<PredictResponse>> =
+        liveData {
+            try {
+                val response = apiService.predictImage(image)
+                emit(Result.success(response))
+            } catch (e: HttpException) {
+                emit(Result.failure(Throwable(e.message)))
+            }
         }
-    }
 
     fun getRecipesByPrediction(prediction: String, callback: (Result<RecommendResponse?>) -> Unit) {
-        apiService.getRecipesByIngredients(prediction).enqueue(object : Callback<RecommendResponse> {
-            override fun onResponse(call: Call<RecommendResponse>, response: Response<RecommendResponse>) {
-                if (response.isSuccessful) {
-                    callback(Result.success(response.body()))
-                } else {
-                    val errorMessage = "Failed to fetch recipes: ${response.code()}"
-                    callback(Result.failure(Throwable(errorMessage)))
+        apiService.getRecipesByIngredients(prediction)
+            .enqueue(object : Callback<RecommendResponse> {
+                override fun onResponse(
+                    call: Call<RecommendResponse>,
+                    response: Response<RecommendResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        callback(Result.success(response.body()))
+                    } else {
+                        val errorMessage = "Failed to fetch recipes: ${response.code()}"
+                        callback(Result.failure(Throwable(errorMessage)))
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<RecommendResponse>, t: Throwable) {
-                callback(Result.failure(t))
-            }
-        })
+                override fun onFailure(call: Call<RecommendResponse>, t: Throwable) {
+                    callback(Result.failure(t))
+                }
+            })
     }
 
     suspend fun getRecipesByUser(token: String): LiveData<Result<RecipeUserResponse>> = liveData {
@@ -120,6 +130,7 @@ class UserRepository(
             emit(Result.failure(e))
         }
     }
+
     suspend fun saveToken(token: String) {
         userPreference.saveToken(token)
     }

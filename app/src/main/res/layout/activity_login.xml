@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="?attr/colorSecondary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSecondary"
     tools:context=".ui.LoginActivity">
 
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:layout_marginTop="50dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/logo_educook"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -40,8 +40,8 @@
         android:id="@+id/tv_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="5dp"
         android:text="@string/to"
         android:textColor="?attr/colorOnSecondary"
         android:textSize="24sp"
@@ -62,8 +62,8 @@
         android:textColor="?attr/colorPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/tv_to"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
@@ -76,7 +76,7 @@
         android:text="@string/desc_signin_page"
         android:textColor="?attr/colorOnSecondary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_to"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_to" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailEditTextLayout"
@@ -86,10 +86,10 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="24dp"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/gray"
         android:hint="@string/email"
         android:textColorHint="?attr/hintTextColor"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descTextView">
@@ -189,8 +189,8 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:indeterminateTint="?attr/colorPrimary"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

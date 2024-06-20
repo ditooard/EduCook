@@ -10,15 +10,14 @@
     <FrameLayout
         android:id="@+id/bottomFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
+        style="@style/CustomBottomAppBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="@style/CustomBottomAppBarStyle"
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
         app:fabAlignmentMode="center"
@@ -45,12 +44,12 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:backgroundTint="@color/red"
-        app:tint="@android:color/white"
+        android:contentDescription="@string/camera_navigation"
         android:src="@drawable/ic_camera"
         app:layout_anchor="@+id/bottomAppBar"
         app:layout_anchorGravity="top|center"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.AppCompat.Circle"
-        tools:ignore="MissingClass"
-        android:contentDescription="@string/camera_navigation" />
+        app:tint="@android:color/white"
+        tools:ignore="MissingClass" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

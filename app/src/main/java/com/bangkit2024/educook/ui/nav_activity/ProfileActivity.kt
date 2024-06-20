@@ -84,15 +84,16 @@ class ProfileActivity : Fragment() {
                         fetchAndDisplayRecipes(nonNullRecipes)
                     }
                 }.onFailure { error ->
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to fetch recipes: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (isAdded) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to fetch recipes: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
-
     }
 
     private fun showLogoutConfirmationDialog() {
@@ -139,10 +140,14 @@ class ProfileActivity : Fragment() {
                 }
             }
             Log.d("ProfileActivity", "Updated recipes: $updatedRecipes")
-            adapter.addRecipes(updatedRecipes)
-            binding.progressBar3.visibility = View.GONE
-            Log.d("ProfileActivity", "Recipes displayed and progress bar set to GONE")
-            updateNoDataFoundView(updatedRecipes.isEmpty())
+
+            // Check if the fragment is still added before updating the UI
+            if (isAdded) {
+                adapter.addRecipes(updatedRecipes)
+                binding.progressBar3.visibility = View.GONE
+                Log.d("ProfileActivity", "Recipes displayed and progress bar set to GONE")
+                updateNoDataFoundView(updatedRecipes.isEmpty())
+            }
         }
     }
 

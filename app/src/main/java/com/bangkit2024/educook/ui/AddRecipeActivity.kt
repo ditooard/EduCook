@@ -88,17 +88,33 @@ class AddRecipeActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     viewModel.getToken().collect { token ->
                         if (token.isNotEmpty()) {
-                            viewModel.addRecipe(token, image, titleRecipe, ingredientsRecipe, directionsRecipe).observe(this@AddRecipeActivity) { result ->
+                            viewModel.addRecipe(
+                                token,
+                                image,
+                                titleRecipe,
+                                ingredientsRecipe,
+                                directionsRecipe
+                            ).observe(this@AddRecipeActivity) { result ->
                                 binding.progressBar.visibility = View.GONE
                                 result.onSuccess {
-                                    Toast.makeText(this@AddRecipeActivity, getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(this@AddRecipeActivity, MainActivity::class.java)
-                                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                    Toast.makeText(
+                                        this@AddRecipeActivity,
+                                        getString(R.string.upload_success),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    val intent =
+                                        Intent(this@AddRecipeActivity, MainActivity::class.java)
+                                    intent.flags =
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                                     startActivity(intent)
                                     finish()
                                 }
                                 result.onFailure { error ->
-                                    Toast.makeText(this@AddRecipeActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@AddRecipeActivity,
+                                        "Error: ${error.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                             }

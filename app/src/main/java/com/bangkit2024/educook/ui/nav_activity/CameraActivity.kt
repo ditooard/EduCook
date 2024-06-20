@@ -4,13 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bangkit2024.educook.R
@@ -25,11 +25,13 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.net.SocketTimeoutException
 
 class CameraActivity : Fragment() {
-    private lateinit var binding: ActivityCameraBinding
+    private var _binding: ActivityCameraBinding? = null
+    private val binding get() = _binding!!
     private var currentImageUri: Uri? = null
-    private val viewModel by viewModels<RecommendViewModel>{
+    private val viewModel by viewModels<RecommendViewModel> {
         ViewModelFactory.getInstance(requireContext())
     }
 
@@ -37,7 +39,7 @@ class CameraActivity : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = ActivityCameraBinding.inflate(inflater, container, false)
+        _binding = ActivityCameraBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -79,10 +81,10 @@ class CameraActivity : Fragment() {
         }
     }
 
-    private fun predictImage(){
+    private fun predictImage() {
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, requireContext()).reduceFileImage()
-            Log.d("Image File", "showImage: ${imageFile.path}")
+            Log.d("Image File", "Image Path: ${imageFile.path}")
             val requestImageFile = imageFile.asRequestBody("image/*".toMediaType())
             val image = MultipartBody.Part.createFormData(
                 "gambar",
@@ -90,14 +92,18 @@ class CameraActivity : Fragment() {
                 requestImageFile
             )
             showLoading(true)
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.predictImage(image).observe(viewLifecycleOwner) { result ->
                     showLoading(false)
                     result.onSuccess { response ->
                         val prediction = response.dicari
                         navigateToRecommendation(prediction)
                     }.onFailure { error ->
-                        showToast("Prediction failed: ${error.message}")
+                        if (error is SocketTimeoutException) {
+                            showToast("Request timed out. Please try again.")
+                        } else {
+                            showToast("Prediction failed: ${error.message}")
+                        }
                     }
                 }
             }
@@ -105,14 +111,15 @@ class CameraActivity : Fragment() {
     }
 
     private fun navigateToRecommendation(prediction: String) {
-        val intent = Intent(requireContext(), RecommendationActivity::class.java)
-        intent.putExtra(EXTRA_PREDICT, prediction)
+        val intent = Intent(requireContext(), RecommendationActivity::class.java).apply {
+            putExtra(EXTRA_PREDICT, prediction)
+        }
         startActivity(intent)
     }
 
     private fun showImage() {
         currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
+            Log.d("Image URI", "Image URI: $it")
             binding.ivInsertPhoto.setImageURI(it)
         }
     }
@@ -123,6 +130,11 @@ class CameraActivity : Fragment() {
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

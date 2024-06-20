@@ -7,7 +7,7 @@ import com.bangkit2024.educook.data.local.BookmarkDao
 import com.bangkit2024.educook.data.local.BookmarkDatabase
 import com.bangkit2024.educook.data.local.BookmarkMenu
 
-class BookmarkViewModel(application: Application) : AndroidViewModel(application)  {
+class BookmarkViewModel(application: Application) : AndroidViewModel(application) {
 
     private var daoBookmark: BookmarkDao?
     private var dbBookmark: BookmarkDatabase?

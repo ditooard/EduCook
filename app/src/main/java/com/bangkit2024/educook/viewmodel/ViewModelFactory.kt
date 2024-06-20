@@ -14,15 +14,15 @@ class ViewModelFactory private constructor(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
             return RegisterViewModel(userRepository) as T
-        } else if (modelClass.isAssignableFrom(LoginViewModel::class.java)){
+        } else if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(userRepository) as T
-        } else if (modelClass.isAssignableFrom(MainViewModel::class.java)){
+        } else if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(userRepository) as T
-        } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)){
+        } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             return ProfileViewModel(userRepository) as T
-        } else if (modelClass.isAssignableFrom(AddViewModel::class.java)){
+        } else if (modelClass.isAssignableFrom(AddViewModel::class.java)) {
             return AddViewModel(userRepository) as T
-        } else if (modelClass.isAssignableFrom(RecommendViewModel::class.java)){
+        } else if (modelClass.isAssignableFrom(RecommendViewModel::class.java)) {
             return RecommendViewModel(userRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

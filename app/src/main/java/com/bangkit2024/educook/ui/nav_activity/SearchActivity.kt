@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.SearchView
 import com.bangkit2024.educook.adapter.RecipeAdapter
 import com.bangkit2024.educook.api.RetrofitClient
 import com.bangkit2024.educook.data.response.ImageResponse
@@ -39,13 +39,14 @@ class SearchActivity : Fragment() {
     private var isLoading = false
     private var hasNextPage = true
 
-    private lateinit var binding: ActivitySearchBinding
+    private var _binding: ActivitySearchBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ActivitySearchBinding.inflate(inflater, container, false)
+        _binding = ActivitySearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -182,8 +183,10 @@ class SearchActivity : Fragment() {
                         val recipes = recipeResponse.data
                         if (recipes.isEmpty()) {
                             // No data case
+                            adapter.clearRecipes()
                             binding.noDataFound.visibility = View.VISIBLE
                         } else {
+                            binding.noDataFound.visibility = View.GONE
                             val updatedRecipes = mutableListOf<Recipe>()
 
                             for (recipe in recipes) {
@@ -191,15 +194,19 @@ class SearchActivity : Fragment() {
                                     recipe.imageUrl = imageUrl
                                     updatedRecipes.add(recipe)
                                     if (updatedRecipes.size == recipes.size) {
-                                        adapter.addRecipes(updatedRecipes)
-                                        binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
-                                        hasNextPage = recipeResponse.pagination.hasNextPage
+                                        if (isAdded) { // Ensure the fragment is still added
+                                            adapter.addRecipes(updatedRecipes)
+                                            binding.noDataFound.visibility =
+                                                if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                                            hasNextPage = recipeResponse.pagination.hasNextPage
+                                        }
                                     }
                                 }
                             }
                         }
                     } else {
                         Log.e("SearchActivity", "Empty response body")
+                        adapter.clearRecipes()
                         binding.noDataFound.visibility = View.VISIBLE
                     }
                 } else {
@@ -207,9 +214,11 @@ class SearchActivity : Fragment() {
                     Log.e("SearchActivity", "Error: ${response.code()}, $errorBody")
                     Toast.makeText(
                         requireContext(),
-                        "Failed to load recipe, Error ${response.code()}",
+                        "Failed to load recipes, Error ${response.code()}",
                         Toast.LENGTH_SHORT
                     ).show()
+                    adapter.clearRecipes()
+                    binding.noDataFound.visibility = View.VISIBLE
                 }
             }
 
@@ -220,7 +229,10 @@ class SearchActivity : Fragment() {
                 progressBar.visibility = View.GONE
 
                 Log.e("SearchActivity", "Failure: ${t.message}")
-                Toast.makeText(requireContext(), "Failed to load recipe", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load recipes", Toast.LENGTH_SHORT)
+                    .show()
+                adapter.clearRecipes()
+                binding.noDataFound.visibility = View.VISIBLE
             }
         })
     }
@@ -241,19 +253,31 @@ class SearchActivity : Fragment() {
                     val recipes = response.body() ?: emptyList()
                     val updatedRecipes = mutableListOf<Recipe>()
 
-                    for (recipe in recipes) {
-                        fetchImage(recipe.imageId) { imageUrl ->
-                            recipe.imageUrl = imageUrl
-                            updatedRecipes.add(recipe)
-                            if (updatedRecipes.size == recipes.size) {
-                                adapter.clearRecipes() // Clear previous search results
-                                adapter.addRecipes(updatedRecipes)
-                                binding.noDataFound.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                    if (recipes.isEmpty()) {
+                        adapter.clearRecipes()
+                        binding.noDataFound.visibility = View.VISIBLE
+                    } else {
+                        binding.noDataFound.visibility = View.GONE
+                        for (recipe in recipes) {
+                            fetchImage(recipe.imageId) { imageUrl ->
+                                recipe.imageUrl = imageUrl
+                                updatedRecipes.add(recipe)
+                                if (updatedRecipes.size == recipes.size) {
+                                    if (isAdded) { // Ensure the fragment is still added
+                                        adapter.clearRecipes() // Clear previous search results
+                                        adapter.addRecipes(updatedRecipes)
+                                        binding.noDataFound.visibility =
+                                            if (adapter.itemCount == 0) View.VISIBLE else View.GONE
+                                    }
+                                }
                             }
                         }
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Failed to find a recipe", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Failed to find recipes", Toast.LENGTH_SHORT)
+                        .show()
+                    adapter.clearRecipes()
+                    binding.noDataFound.visibility = View.VISIBLE
                 }
             }
 
@@ -262,8 +286,17 @@ class SearchActivity : Fragment() {
 
                 isLoading = false
                 progressBar.visibility = View.GONE
-                Toast.makeText(requireContext(), "Failed to find a recipe", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to find recipes", Toast.LENGTH_SHORT)
+                    .show()
+                adapter.clearRecipes()
+                binding.noDataFound.visibility = View.VISIBLE
             }
         })
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
+

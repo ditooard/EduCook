@@ -45,7 +45,11 @@ class LoginActivity : AppCompatActivity() {
         setupAction()
     }
 
-    private fun setupTextInput(editText: TextInputEditText, textInputLayout: TextInputLayout, hintResId: Int) {
+    private fun setupTextInput(
+        editText: TextInputEditText,
+        textInputLayout: TextInputLayout,
+        hintResId: Int
+    ) {
         editText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 textInputLayout.hint = ""
@@ -60,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun setValidatePassword(){
+    private fun setValidatePassword() {
         binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -93,11 +97,16 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.login(email, password).observe(this@LoginActivity) { result ->
                     binding.progressBar.visibility = View.GONE
                     result.onSuccess { response ->
-                        response.data.token.let {token ->
+                        response.data.token.let { token ->
                             viewModel.saveToken(token)
-                            Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@LoginActivity,
+                                getString(R.string.login_success),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                             finish()
                         }
