@@ -2,6 +2,18 @@
 ![PPT Capstone Project](https://github.com/ditooard/EduCook/assets/91383806/9601f77f-cd05-4d05-8032-140fd4af3ce9)
 Welcome to the EduCook App! The project leverages image recognition technology to provide users with personalized recipe recommendations based on available ingredients. Whether you're a culinary novice or an experienced chef, this app will help you discover new and interesting dishes to try.
 
+## Authors
+> Machine Learning
+- [Varell Anthonio](https://github.com/VarellAnthonio)
+- [Muhammad Daffa Fahreza](https://github.com/daffafahreza4)
+- [Zolly Citra Prayogi](https://github.com/zollycp87)
+> Mobile Development
+- [Dito Ardi Pratama](https://github.com/ditooard)
+- [Meida Dela Risyafa Auliya](https://github.com/meidadela)
+> Cloud Computing
+- [Muhamad Abdullah](https://github.com/AexonJP)
+- [Bayu Abdurrosyid](https://github.com/TehBotolBayu)
+  
 ## Built With
 - TensorFlow Lite: Lightweight library for deploying machine learning models on mobile devices.
 - TensorFlow Keras: Library for building and training deep learning models.
@@ -102,7 +114,7 @@ Welcome to the EduCook App! The project leverages image recognition technology t
 | `password`     | `string` | The password of the user |
 
 ## Demo
-Demo application
+Demo application:
 https://youtu.be/FXUIHZT0dJk?si=dSO2yNpBRQ7_d2hI
 
 Happy cooking! 🥘👨‍🍳👩‍🍳
